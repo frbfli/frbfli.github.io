@@ -33,31 +33,39 @@
 		<div class="container">
 			<div class="mainTable" id="mainTable">
 			</div>
-			<textarea id="inputText" cols=150></textarea><br>
-			<input type="button" value="Shuffle">
+			<textarea id="inputText" cols=150>Jason, Allison, Mandy, Dusty, Chelsea, Jeff, Christine, Chad, George, Eddie, Khira, Kirk, Sam, Jenny</textarea><br>
+			<input type="button" value="Shuffle" id="shuffleButton">
 		</div>
 	</body>
 	<script>
-		var arr = ['Jason', 'Allison', 'Mandy', 'Dusty', 'Chelsea', 'Jeff', 'Christine', 'Chad', 'George', 'Eddie', 'Khira', 'Kirk', 'Sam', 'Jenny'];
+		var arr = [];
 
-		arr = shuffle(arr);
-		//console.log(arr);
-		for (var i = 0; i < arr.length; i++) {
+		document.getElementById('shuffleButton').addEventListener('click', function(){
+			arr = [];
+			var tempArray = document.getElementById('inputText').value.split(',');
+			for (var i = 0; i < tempArray.length; i++) {
+				arr.push(tempArray[i]);
+			}
+			createArray();
+		});
+
+		function createArray() {
+			arr = shuffle(arr);
 			var mainTable = document.getElementById('mainTable');
-			mainTable.innerHTML += '<p>' + (i + 1) + '. ' + arr[i] + '</p>';
-		}
+			mainTable.innerHTML = '';
+			for (var i = 0; i < arr.length; i++) {				
+				mainTable.innerHTML += '<p>' + (i + 1) + '. ' + arr[i] + '</p>';
+			}
+		}		
 
 		function shuffle(array) {
 		  var currentIndex = array.length, temporaryValue, randomIndex;
 
-		  // While there remain elements to shuffle...
 		  while (0 !== currentIndex) {
 
-		    // Pick a remaining element...
 		    randomIndex = Math.floor(Math.random() * currentIndex);
 		    currentIndex -= 1;
 
-		    // And swap it with the current element.
 		    temporaryValue = array[currentIndex];
 		    array[currentIndex] = array[randomIndex];
 		    array[randomIndex] = temporaryValue;
