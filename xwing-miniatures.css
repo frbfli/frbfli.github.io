@@ -1,3 +1,7 @@
+.center {
+  text-align: center;
+}
+
 @font-face {
   font-family: XWing;
   src: url('xwing-miniatures.ttf'); }
@@ -103,11 +107,17 @@ i.xwing-miniatures-font-cloak:before {
 i.xwing-miniatures-font-targetlock:before {
   content: "\006c"; }
 
+i.xwing-miniatures-font-modification:before {
+  content: "\006d"; }
+
 i.xwing-miniatures-font-coordinate:before {
   content: "\006f"; }
 
 i.xwing-miniatures-font-barrelroll:before {
   content: "\0072"; }
+
+i.xwing-miniatures-font-slam:before {
+  content: "\0073"; }
 
 i.xwing-miniatures-font-unique:before {
   content: "\0075"; }
