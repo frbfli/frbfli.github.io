@@ -14,22 +14,27 @@
 			body {
 				background-color: #ABE2F5;
 			}
-			.mainTable {
-				margin: 0 auto;
-				margin-top: 20px;
-				width: 200px;
+			.container {
 				background-color: #FFF;
+				width: 80%;
+				margin: 0 auto;
 			}
 			.mainTable p {
 				padding: 12px;
 				font-size: 16pt;
-			}			
+			}		
+			.container input, .container textarea {
+				padding: 10px;
+				margin: 10px;
+			}	
 		</style>
 	</head>
 	<body>
 		<div class="container">
 			<div class="mainTable" id="mainTable">
 			</div>
+			<textarea id="inputText" cols=150></textarea><br>
+			<input type="button" value="Shuffle">
 		</div>
 	</body>
 	<script>
