@@ -1,8 +1,63 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Christmas Party</title>
-  </head>
-  <body>
-  </body>
+	<head>
+		<title>Christmas Party</title>
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+			}
+			html, body {
+				width: 100%;
+			}
+			body {
+				background-color: #ABE2F5;
+			}
+			.mainTable {
+				margin: 0 auto;
+				margin-top: 20px;
+				width: 200px;
+				background-color: #FFF;
+			}
+			.mainTable p {
+				padding: 12px;
+				font-size: 16pt;
+			}			
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="mainTable" id="mainTable">
+			</div>
+		</div>
+	</body>
+	<script>
+		var arr = ['Jason', 'Allison', 'Mandy', 'Dusty', 'Chelsea', 'Jeff', 'Christine', 'Chad', 'George', 'Eddie', 'Khira', 'Kirk', 'Sam', 'Jenny'];
+
+		arr = shuffle(arr);
+		//console.log(arr);
+		for (var i = 0; i < arr.length; i++) {
+			var mainTable = document.getElementById('mainTable');
+			mainTable.innerHTML += '<p>' + (i + 1) + '. ' + arr[i] + '</p>';
+		}
+
+		function shuffle(array) {
+		  var currentIndex = array.length, temporaryValue, randomIndex;
+
+		  // While there remain elements to shuffle...
+		  while (0 !== currentIndex) {
+
+		    // Pick a remaining element...
+		    randomIndex = Math.floor(Math.random() * currentIndex);
+		    currentIndex -= 1;
+
+		    // And swap it with the current element.
+		    temporaryValue = array[currentIndex];
+		    array[currentIndex] = array[randomIndex];
+		    array[randomIndex] = temporaryValue;
+		  }
+
+		  return array;
+		}
+	</script>
 </html>
