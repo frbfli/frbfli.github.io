@@ -94,6 +94,7 @@
 		function genCoords(tempTerrain) {
 			var x, y, size, coin;
 			var canPlace = false;
+			var checkAttemptValue;
 
 			// while (!canPlace) {
 				var checkPlace;
@@ -106,6 +107,7 @@
 						x = Math.floor(Math.random() * (360-330+1)) + 330;
 					}
 					size = 3;
+					checkAttempValue = 200;
 				}
 				else {
 					x = Math.floor(Math.random() * (360)) + 1;
@@ -123,7 +125,7 @@
 							size = 4;
 							break;
 					}
-				// }
+				}
 				y = Math.floor(Math.random() * (300 - 100 + 1)) + 100;
 				var tempCoords = [];
 				tempCoords.x = x;
@@ -147,7 +149,7 @@
 				}
 				
 				
-			}
+			// }
 			// }
 		}
 
