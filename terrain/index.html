@@ -1,164 +1,390 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta content="IE=Edge" http-equiv="X-UA-Compatible">
-<meta content="yes" name="apple-mobile-web-app-capable">
-<meta content="yes" name="mobile-web-app-capable">
-<meta content="black" name="apple-mobile-web-app-status-bar-style">
-<meta content="user-scalable=no" name="viewport">
-<meta charset="UTF-8">
-<link href="icons/V-72.png" sizes="72x72" rel="apple-touch-icon">
-<link href="icons/V-114.png" sizes="114x114" rel="apple-touch-icon">
-<link href="icons/V-144.png" sizes="144x144" rel="apple-touch-icon">
-<link href="icons/V-192.png" sizes="192x192" type="image/png" rel="icon">
-<link href="icons/V-96.png" sizes="96x96" type="image/png" rel="icon">
-<link href="manifest.json" rel="manifest">
-<script src="js/jquery-3.2.1.min.js"></script>
-<link rel="stylesheet" type="text/css" href="style.css">
-<title>Valero iPad</title>
+	<meta content="yes" name="apple-mobile-web-app-capable">
+	<meta content="yes" name="mobile-web-app-capable">
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<meta content="user-scalable=no" name="viewport">
+	<link href="icons/icon-72.png" sizes="72x72" rel="apple-touch-icon">
+	<link href="icons/icon-114.png" sizes="114x114" rel="apple-touch-icon">
+	<link href="icons/icon-144.png" sizes="144x144" rel="apple-touch-icon">
+	<link href="icons/icon-192.png" sizes="192x192" type="image/png" rel="icon">
+	<link href="icons/icon-96.png" sizes="96x96" type="image/png" rel="icon">
+	<link href="images/manifest.json" rel="manifest">
+	<title>Guild Ball Terrain Generator</title>
+	<style>
+		html, body {
+			margin: 0;
+			width: 100%;
+			height: 100%;
+		}
+		body, #hideView {
+			background-color: #272a2e;
+			background-image: url("images/gb_logo.png");
+			background-repeat: repeat-y;
+			background-position: center center;
+			background-size: cover;
+		}
+		#container {
+			width: 100%;
+			max-height: 100%;
+			background-image: url("images/pitch.jpg");
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-position: center center;
+		}
+
+		.infoBox {
+			position: absolute;
+			left: 50%;
+			bottom: 14px;
+			transform: translate(-50%);
+			width: 480px;
+		}
+
+		.infoBox .infoBoxInner {
+			display: inline-block;
+			height: 60px;
+			line-height: 60px;
+			margin: 10px;
+		}
+
+		.infoBox img {
+			float: left;
+			height: 60px;
+			margin-right: 10px;
+			width: 60px;
+		}
+
+		.infoBox span {
+			color: white;
+		}
+
+		.button {
+			background-color: #4caf50;
+			border: medium none;
+			bottom: 0;
+			color: white;
+			display: inline-block;
+			font-size: 3em;
+			left: 50%;
+			padding: 15px 32px;
+			position: absolute;
+			text-align: center;
+			text-decoration: none;
+			transform: translate(-50%);
+		}
+
+		#hideView {
+			position: fixed;
+			top: 0;
+			right: 0;
+			left: 0;
+			bottom: 0;
+			width: 100%;
+			height: 100%;
+			padding: 0.3em;
+			text-align: center;
+			display: none;
+			color: white;
+		}
+
+		@media screen and (max-device-width:800px) and (orientation:landscape) {
+			#hideView {
+				display: block;
+			}
+		}
+
+	</style>
 </head>
-<body>
-    <figure id="videoContainer">
-        <div class="menuContainer" onclick="menuChange(this)">
-            <div class="bar1"></div>
-            <div class="bar2"></div>
-            <div class="bar3"></div>
-        </div>
-        <div class="videoController">
-            <div id="logo" class="logo showControls">
-                <img src="logo.png" style="width: 340px;" />
-            </div>
-            <div id="videoSelector" class="showControls">
-                <span id="instructions" class="instructions showControls">Please click on the buttons below for a <br />better understanding of the process.</span>
-                <span class="vidSelect left" data-video="1"><img src="IPadLogo.jpg"><span>Video 1</span></span>
-                <span class="vidSelect right" data-video="4"><img src="IPadLogo.jpg"><span>Video 6</span></span><br class="clear" />
-                <span class="vidSelect left" data-video="2"><img src="IPadLogo.jpg"><span>Video 2</span></span>
-                <span class="vidSelect right" data-video="6"><img src="IPadLogo.jpg"><span>Video 8a</span></span><br class="clear" />
-                <span class="vidSelect left" data-video="3"><img src="IPadLogo.jpg"><span>Video 4</span></span>
-                <span class="vidSelect right" data-video="5"><img src="IPadLogo.jpg"><span>Video 8b</span></span><br class="clear" />
-            </div>
-        	<ul id="video-controls" class="controls showControls">
-                <li>
-                    <span id="playpause" style="display: none;">&#9658;</span>
-                </li>
-            </ul>
-            <input type="range" id="seek-bar" value="0" min="0" class="showControls">
-        </div>
-        <video id="video" src="1/video.mp4" controls preload="metadata" playsinline>
-        </video>
-    </figure>
-    <script type="text/javascript">
-        $('.menuContainer').addClass('change');
-        var loc = window.location.href;
-        var supportsVideo = !!document.createElement('video').canPlayType;
-        if (supportsVideo) {
-            var videoContainer = document.getElementById('videoContainer');
-            var video = document.getElementById('video');
-            var videoControls = document.getElementById('video-controls');
+<body onload="preLoad()">
+	<div id="container" style="margin: 0px auto; width: 720px; transform: translate(-50%, -50%); position: absolute; left: 50%; top:50%;">
+		<canvas id="map" width="720" height="720"></canvas>
+	</div>
+	<div class="infoBox">
+		<div class="infoBoxInner"><img src="images/ba.png" id="ba" /><span>- Barrier</span></div>
+		<div class="infoBoxInner"><img src="images/fg.png" id="fg" /><span>- Fast Ground</span></div>
+		<div class="infoBoxInner"><img src="images/fo.png" id="fo" /><span>- Forest</span></div>
+		<div class="infoBoxInner"><img src="images/ob.png" id="ob" /><span>- Obstruction</span></div>
+		<div class="infoBoxInner"><img src="images/rg.png" id="rg" /><span>- Rough Ground</span></div>
+		<div style="clear: both; margin-top: 90px;"></div>
+		<div id="generate" value="Generate" onclick="generate()" class="button">Generate</div>
+	</div>
+	<div id="hideView">
+		<p>This app is designed for portrait mode only. Please rotate your device.</p>
+		<p><a href='http://www.freepik.com/free-vector/cartoon-icons_1076838.htm'>Designed by Freepik</a> - Barrel</p>
+		<p><a href="http://www.freepik.com/free-vector/flowers-in-the-garden_895580.htm">Designed by Freepik</a> - Wall</p>
+		<p><a href="http://www.freepik.com/free-vector/melting-ice-cube-vector_586904.htm">Designed by Freepik</a> - Ice</p>
+		<p><a href="http://www.freepik.com/free-vector/diverse-trees-cartoon-pack_742874.htm">Designed by Freepik</a> - Tree</p>
+		<p><a href="http://www.freepik.com/free-vector/stones-cartoon_997676.htm">Designed by Freepik</a> - Rocks</p>
+		<p>Guild Ball and the Guild Ball logo are trademarks of Steamforged Games Ltd.</p>
+		<p>This app is not affiliated with or endorsed by SFG.</p>
+		<p>Pitch image by <a href="http://matt-adlard.deviantart.com/art/Guildball-Grass-Mat-544684677" alt="Pitch source">Matt Adlard</a>.</p>
 
-            var time;
+	</div>
 
-            //Hide default controls
-            video.controls = false;
+	<script type="text/javascript">
+		if (window.navigator.standalone != true)
+		{
+			alert("This page works best when added to your homescreen as a standalone app on iOS or Android devices.");
+		}
+	</script>
+	<script>
+		var c = document.getElementById("map");
+		var ctx = c.getContext("2d");
+		var scale = 2;
+		var terrainDistance = 60 * scale;
+		var sizeMultiplier = 10 * scale;
 
-            //Display custon controls
-            videoControls.style.display = 'block';
+		var Terrain = function(type, x, y, size, midX, midY) {
+			this.type = type;
+			this.x = x;
+			this.y = y;
+			this.size = size;
+			this.midX = midX;
+			this.midY = midY;
+		}
 
-            //Controls
-            var playpause = document.getElementById('playpause');
-            var seekBar = document.getElementById("seek-bar");
-            var videoSelector = document.getElementById('videoSelector');
-            var instructions = document.getElementById('instructions');
-            var logo = document.getElementById('logo');
+		var TerrainType = function(name, size) {
+			this.name = name;
+			this.size = size;
+		}
 
-            //Add listeners
+		var terrainArray = [];
 
-            //Play/Pause
-            playpause.addEventListener('click', function(e) {
-                playPause();
-            });
+		var types = [
+			"fast",
+			"rough",
+			"forest",
+			"obstruction",
+			"barrier"
+		];
 
-            video.addEventListener('click', function(e) {
-             playPause();
-            });
+		var type = [];
 
-            videoSelector.addEventListener('click', function(e) {
-                playPause();
-            });
+		var loc = [];
 
-            $('#seek-bar').on('touchstart', function() {
-                video.pause();
-            });
+		var checkAttempt = 0;
 
-            $('#seek-bar').on('touchend', function() {
-                time = video.duration * (seekBar.value / 100);
-                video.currentTime = time;
-                video.play();
-            });
+		function rando(min, max) {
+			var n = Math.floor(Math.random() * (1 + max - min)) + min;
+			return n;
+		}
 
-            // $('#seek-bar').on('mousedown', function() {
-            //     video.pause();
-            // });
+		function setTypes(check) {
+			// get number of ground/terrain pieces
+			var n = rando(4,6);
 
-            // $('#seek-bar').on('mouseup', function() {
-            //     time = video.duration * (seekBar.value / 100);
-            //     video.currentTime = time;
-            //     video.play();
-            // });
+			// get number of obstructions (50%+)
+			var ob = Math.ceil(n / 2);
 
+			// set counters for barrier, forest, and fast ground types
+			var barrier = 0;
+			var forest = 0;
+			var fast = 0;
 
-            // Update the seek bar as the video plays
-            video.addEventListener("timeupdate", function() {
-              // Calculate the slider value
-              var value = (100 / video.duration) * video.currentTime;
+			// get ground/terrain type for each piece
+			for (var i = 0; i < n; i++) {
+				if (i < ob) {
+					type[i] = "obstruction";
+				}
+				else {
+					// choose a random ground/terrain type
+					type[i] = types[rando(0,types.length - 1)];
+					// redo if result is second barrier, second forest, or third fast ground
+					while(barrier > 0 && type[i] == "barrier" || forest > 0 && type[i] == "forest" || fast > 1 && type[i] == "fast") {
+						type[i] = types[rando(0,types.length - 1)];
+					}
+					// if result is barrier, increase barrier counter
+					if (type[i] == "barrier") { barrier++; }
+					// if result is forest, increase forest counter
+					else if (type[i] == "forest") { forest++; }
+					// if result is fast ground, increase fast ground counter
+					else if (type[i] == "fast") { fast++; }
+				}
+				genCoords(type[i]);
+			}
+		}
 
-              // Update the slider value
-              seekBar.value = value;
-            });
+		function genCoords(tempTerrain) {
+			var x, y, size, coin;
+			var canPlace = false;
+			var checkAttemptValue;
 
+			// while (!canPlace) {
+				var checkPlace;
+				// for (var i = 0; i < type.length; i++) {
+				if (tempTerrain == "fast") {
+					coin = Math.floor(Math.random() * 2) + 1;  
+					if (coin < 2) {
+						x = (Math.floor(Math.random() * 30) + 1) * scale;
+					} else {
+						x = (Math.floor(Math.random() * (360-330+1)) + 330) * scale;
+					}
+					size = 3;
+					checkAttempValue = 200;
+				}
+				else {
+					x = (Math.floor(Math.random() * (360 * scale)) + 1);
+					switch (tempTerrain) {
+						case 'rough':
+							size = 6;
+							break;
+						case 'forest':
+							size = 6;
+							break;
+						case 'barrier':
+							size = 4;
+							break;
+						default:
+							size = 4;
+							break;
+					}
+				}
+				y = (Math.floor(Math.random() * (260-100+1)) + 100) * scale;
+				var tempCoords = [];
+				tempCoords.x = x;
+				tempCoords.y = y;
+				tempCoords.size = size;
+				tempCoords = fixTerrain(tempCoords);
+				if (terrainArray.length != 0) { 
+					checkPlace = checkCollision(tempCoords);
+					if (checkPlace) {
+						terrainArray.push(new Terrain(tempTerrain, tempCoords.x, tempCoords.y, tempCoords.size, tempCoords.midX, tempCoords.midY));
+						checkAttempt = 0;
+					} else {
+						checkAttempt += 1;
+						if(checkAttempt <= 50) {
+							genCoords(tempTerrain);
+						}
+					}
+				} else {
+					terrainArray.push(new Terrain(tempTerrain, tempCoords.x, tempCoords.y, tempCoords.size, tempCoords.midX, tempCoords.midY));
+					checkAttempt = 0;
+				}
+				
+				
+			// }
+			// }
+		}
 
-            video.onended = function() {
-            	videoControls.classList.add('showControls');
-                videoSelector.classList.add('showControls');
-                seekBar.classList.add('showControls');
-                instructions.classList.add('showControls');
-                logo.classList.add('showControls');
-                $('.menuContainer').addClass('change');
-            	video.currentTime = 0;
-            	video.pause();
-            }
+		function fixTerrain(t) {
+			if (t.x + (t.size * sizeMultiplier) >= (360 * scale)) {
+				t.x = (360 * scale) - (t.size * sizeMultiplier);
+			}
+			if (t.y + (t.size * sizeMultiplier) >= (260 * scale)) {
+				t.y = (260 * scale) - (t.size * sizeMultiplier);
+			}
 
-            $('.vidSelect').on("click", function() {
-               var videoSource = $(this).attr('data-video');
-               $('#seek-bar').val(0);
-               video.src = videoSource + '/video.mp4';
-            });
-        }
+			t.midX = (t.x + ((t.size * sizeMultiplier) / 2));
+			t.midY = (t.y + ((t.size * sizeMultiplier) / 2));
 
-        function playPause() {
-            if (video.paused || video.ended) {
-                videoControls.classList.remove('showControls');
-                videoSelector.classList.remove('showControls');
-                seekBar.classList.remove('showControls');
-                instructions.classList.remove('showControls');
-                logo.classList.remove('showControls');
-                $('.menuContainer').removeClass('change');
-                video.play();
-            } 
-            else {
-                video.pause();
-            }
-        }
+			return t;
+		}
 
-        function menuChange(x) {
-            x.classList.toggle('change');
-            videoControls.classList.toggle('showControls');
-            videoSelector.classList.toggle('showControls');
-            seekBar.classList.toggle('showControls');
-            instructions.classList.toggle('showControls');
-            logo.classList.toggle('showControls');
-        }
+		function paintTerrain() {
+			var image;
+			for (i in terrainArray) {
+				switch(terrainArray[i].type) {
+					case 'fast':
+						image = "fg";
+						break;
+					case 'rough':
+						image = "rg";
+						break;
+					case 'forest':
+						image = "fo";
+						break;
+					case 'obstruction':
+						image = "ob";
+						break;
+					case 'barrier':
+						image = "ba";
+						break;
+				}
 
-    </script>
+				var img = document.getElementById(image);
+				ctx.drawImage(img, terrainArray[i].x, terrainArray[i].y);
+
+			}
+		}
+
+		function checkCollision(c) {
+			var t = terrainArray;
+			var checkHere;
+			var size2 = c.size * sizeMultiplier;
+			var rect2 = {
+				x: c.x - terrainDistance,
+				y: c.y - terrainDistance,
+				w: size2 + terrainDistance,
+				h: size2 + terrainDistance
+			}
+			for (i in terrainArray) {
+				var size1 = terrainArray[i].size * sizeMultiplier;
+				var rect1 = {
+					x: terrainArray[i].x - terrainDistance,
+					y: terrainArray[i].y - terrainDistance,
+					w: size1 + terrainDistance,
+					h: size1 + terrainDistance
+				}
+				checkHere = rectsColliding(rect1, rect2);
+				if (!checkHere) {
+					return checkHere;
+				}
+			}
+			return checkHere;
+		}
+
+		function rectsColliding(rect1, rect2) {
+			if (rect1.x < rect2.x + rect2.w &&
+			   rect1.x + rect1.w > rect2.x &&
+			   rect1.y < rect2.y + rect2.h &&
+			   rect1.h + rect1.y > rect2.y) {
+			   return false;
+			} else {
+			   return true;
+			}
+		}
+
+		function preLoad() {
+
+			var windowHeight = window.innerHeight;
+			var windowWidth = window.innerWidth;
+
+			var contentWidth = document.getElementById('container').offsetWidth;
+			var contentHeight = contentWidth;
+			var buffer = 0;
+			
+			if (contentHeight > windowHeight) {
+				buffer = contentWidth - windowHeight;
+				contentHeight = windowHeight;
+				contentWidth = contentHeight;
+			}
+
+			document.getElementById('container').style.height = contentHeight;
+			document.getElementById('container').style.width = contentWidth;
+
+			// setTypes();
+			// paintTerrain();
+			generate();
+
+		}
+
+		function generate() {
+			terrainArray = [];
+			type = [];
+			loc = [];
+			checkAttempt = 0;
+
+			ctx.clearRect(0,0,c.width, c.height);
+			setTypes();
+			if (terrainArray.length >= 4) {
+				paintTerrain();
+			} else {
+				generate();
+			}
+		}
+
+	</script>
 </body>
 </html>
