@@ -312,8 +312,9 @@
 			document.getElementById('container').style.height = contentHeight;
 			document.getElementById('container').style.width = contentWidth;
 
-			setTypes();
-			paintTerrain();
+			// setTypes();
+			// paintTerrain();
+			generate();
 
 		}
 
@@ -325,7 +326,11 @@
 
 			ctx.clearRect(0,0,c.width, c.height);
 			setTypes();
-			paintTerrain();
+			if (terrainArray.length >= 4) {
+				paintTerrain();
+			} else {
+				generate();
+			}
 		}
 
 	</script>
