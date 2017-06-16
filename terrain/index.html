@@ -62,8 +62,8 @@
 </head>
 <body onload="preLoad()">
 	<div id="generate" value="Generate" onclick="generate()" class="button" style="position: absolute; left: 50%; bottom: 14px; transform: translate(-50%);">Generate</div>
-	<div id="container" style="margin: 0px auto; width: 1080px; transform: translate(-50%, -50%); position: absolute; left: 50%; top:50%;">
-		<canvas id="map" width="1080" height="1080"></canvas>
+	<div id="container" style="margin: 0px auto; width: 900px; transform: translate(-50%, -50%); position: absolute; left: 50%; top:50%;">
+		<canvas id="map" width="900" height="900"></canvas>
 		<img src="images/ba.png" id="ba" style="display:none;" />
 		<img src="images/fg.png" id="fg" style="display:none;" />
 		<img src="images/fo.png" id="fo" style="display:none;" />
@@ -80,7 +80,7 @@
 	<script>
 		var c = document.getElementById("map");
 		var ctx = c.getContext("2d");
-		var scale = 3;
+		var scale = 2.5;
 		var terrainDistance = 60 * scale;
 		var sizeMultiplier = 10 * scale;
 
