@@ -394,23 +394,8 @@
 						break;
 				}
 
-				var left = Math.floor((terrainArray[i].midX / 10) / scale);
-				if (left > 18) {
-					left = 36 - left;
-				}
-				var top = Math.floor((terrainArray[i].midY / 10) / scale);
-				if (top > 18) {
-					top = 36 - top;
-				}
-
-				var midXPlace = terrainArray[i].midX - (((terrainArray[i].size * 10) / 2) * scale);
-				var midYPlace = terrainArray[i].midY + (((terrainArray[i].size * 10) / 2) * scale);
-
 				var img = document.getElementById(image);
 				ctx.drawImage(img, terrainArray[i].x, terrainArray[i].y);
-				ctx.font = "20px Arial";
-				ctx.fillStyle = 'red';
-				ctx.fillText(left + '" x ' + top + '"', midXPlace, midYPlace);
 
 			}
 		}
