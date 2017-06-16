@@ -22,12 +22,20 @@
 		    display: inline-block;
 		    font-size: 16px;
 		}
+		#container {
+			width: 100%;
+			max-height: 100%;
+			background-image: url("images/pitch.jpg");
+			background-size: cover;
+			background-repeat: no-repeat;
+			background-position: center center;
+		}
 	</style>
 </head>
 <body onload="preLoad()">
 	<div id="generate" value="Generate" onclick="generate()" class="button" style="position: absolute; left: 50%; bottom: 4px; transform: translate(-50%);">Generate</div>
 	<div id="container" style="margin: 0px auto; width: 720px; transform: translate(-50%, -50%); position: absolute; top: 50%; left: 50%;">
-		<canvas id="map" width="720" height="720" style="border:1px solid black;"></canvas>
+		<canvas id="map" width="720" height="720"></canvas>
 		<img src="images/ba.png" id="ba" style="display:none;" />
 		<img src="images/fg.png" id="fg" style="display:none;" />
 		<img src="images/fo.png" id="fo" style="display:none;" />
@@ -146,7 +154,7 @@
 							break;
 					}
 				}
-				y = (Math.floor(Math.random() * (300-60+1)) + 60) * scale;
+				y = (Math.floor(Math.random() * (260-100+1)) + 100) * scale;
 				var tempCoords = [];
 				tempCoords.x = x;
 				tempCoords.y = y;
@@ -177,8 +185,8 @@
 			if (t.x + (t.size * sizeMultiplier) >= (360 * scale)) {
 				t.x = (360 * scale) - (t.size * sizeMultiplier);
 			}
-			if (t.y + (t.size * sizeMultiplier) >= (300 * scale)) {
-				t.y = (300 * scale) - (t.size * sizeMultiplier);
+			if (t.y + (t.size * sizeMultiplier) >= (260 * scale)) {
+				t.y = (260 * scale) - (t.size * sizeMultiplier);
 			}
 
 			t.midX = (t.x + ((t.size * sizeMultiplier) / 2));
