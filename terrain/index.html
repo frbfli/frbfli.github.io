@@ -14,6 +14,7 @@
 	<link rel="icon" type="image/png" sizes="96x96" href="images/icon-96.png">
 	<link href="manifest.json" rel="manifest">
 	<title>Guild Ball Terrain Generator</title>
+	<script src="js/jquery-3.2.1.min.js"></script>
 	<style>
 		html, body {
 			margin: 0;
@@ -37,11 +38,8 @@
 		}
 
 		.infoBox {
-			position: absolute;
-			left: 50%;
-			bottom: 14px;
-			transform: translate(-50%);
-			width: 480px;
+			font-size: 2.2em;
+			width: 480px;	
 		}
 
 		.infoBox .infoBoxInner {
@@ -91,6 +89,74 @@
 			color: white;
 		}
 
+		.menuContainer {
+		  display: inline-block;
+		  cursor: pointer;
+		  position: absolute;
+		  top: 10px;
+		  right: 10px;
+		  z-index: 999;
+		}
+		.infoWindow {
+			background-color: #242424;
+			color: white;
+			height: 600px;
+			left: 50%;
+			opacity: 0;
+			padding: 10px;
+			position: absolute;
+			top: 50%;
+			transform: translate(-50%, -50%);
+			transition: all 0.2s ease 0s;
+			visibility: hidden;
+			width: 650px;
+		}
+
+		.infoWindow p {
+			font-size: 8pt;
+		}
+
+		.infoWindow a {
+			color: white;
+		}
+
+		.infoWindowOverlay {
+			background-color: rgba(0,0,0,0.75);
+			width:100%;
+			height:100%;
+			position: absolute;
+			opacity: 0;
+			visibility: hidden;
+			transition: all 0.2s;
+		}
+
+		.show {
+			visibility: visible;
+			opacity: 1;
+		}
+
+		.bar1, .bar2, .bar3 {
+		  width: 35px;
+		  height: 5px;
+		  background-color: white;
+		  margin: 6px 0;
+		  transition: 0.4s;
+		}
+
+		.change .bar1 {
+		  -webkit-transform: rotate(-45deg) translate(-9px, 6px);
+		  transform: rotate(-45deg) translate(-9px, 6px);
+		}
+
+		.change .bar2 {
+		  opacity: 0;
+		}
+
+		.change .bar3 {
+		  -webkit-transform: rotate(45deg) translate(-8px, -8px) ;
+		  transform: rotate(45deg) translate(-8px, -8px) ;
+		}
+
 		@media screen and (max-device-width:800px) and (orientation:landscape) {
 			#hideView {
 				display: block;
@@ -100,20 +166,29 @@
 	</style>
 </head>
 <body onload="preLoad()">
+	<div class="menuContainer" onclick="menuChange(this)">
+        <div class="bar1"></div>
+        <div class="bar2"></div>
+        <div class="bar3"></div>
+    </div>
 	<div id="container" style="margin: 0px auto; width: 720px; transform: translate(-50%, -50%); position: absolute; left: 50%; top:50%;">
 		<canvas id="map" width="720" height="720"></canvas>
 	</div>
-	<div class="infoBox">
-		<div class="infoBoxInner"><img src="images/ba.png" id="ba" /><span>- Barrier</span></div>
-		<div class="infoBoxInner"><img src="images/fg.png" id="fg" /><span>- Fast Ground</span></div>
-		<div class="infoBoxInner"><img src="images/fo.png" id="fo" /><span>- Forest</span></div>
-		<div class="infoBoxInner"><img src="images/ob.png" id="ob" /><span>- Obstruction</span></div>
-		<div class="infoBoxInner"><img src="images/rg.png" id="rg" /><span>- Rough Ground</span></div>
-		<div style="clear: both; margin-top: 90px;"></div>
-		<div id="generate" value="Generate" onclick="generate()" class="button">Generate</div>
-	</div>
+	<div id="generate" value="Generate" onclick="generate()" class="button">Generate</div>
 	<div id="hideView">
 		<p>This app is designed for portrait mode only. Please rotate your device.</p>
+	</div>
+	<div class="infoWindowOverlay">
+	</div>
+	<div class="infoWindow">
+		<div class="infoBox">
+			<div class="infoBoxInner"><img src="images/ba.png" id="ba" /><span>- Barrier</span></div>
+			<div class="infoBoxInner"><img src="images/fg.png" id="fg" /><span>- Fast Ground</span></div>
+			<div class="infoBoxInner"><img src="images/fo.png" id="fo" /><span>- Forest</span></div>
+			<div class="infoBoxInner"><img src="images/ob.png" id="ob" /><span>- Obstruction</span></div>
+			<div class="infoBoxInner"><img src="images/rg.png" id="rg" /><span>- Rough Ground</span></div>
+			<div style="clear: both;"></div>
+		</div>
 		<p><a href='http://www.freepik.com/free-vector/cartoon-icons_1076838.htm'>Designed by Freepik</a> - Barrel</p>
 		<p><a href="http://www.freepik.com/free-vector/flowers-in-the-garden_895580.htm">Designed by Freepik</a> - Wall</p>
 		<p><a href="http://www.freepik.com/free-vector/melting-ice-cube-vector_586904.htm">Designed by Freepik</a> - Ice</p>
@@ -122,8 +197,8 @@
 		<p>Guild Ball and the Guild Ball logo are trademarks of Steamforged Games Ltd.</p>
 		<p>This app is not affiliated with or endorsed by SFG.</p>
 		<p>Pitch image by <a href="http://matt-adlard.deviantart.com/art/Guildball-Grass-Mat-544684677" alt="Pitch source">Matt Adlard</a>.</p>
-
 	</div>
+
 
 	<script type="text/javascript">
 		if (window.navigator.standalone != true)
@@ -386,6 +461,12 @@
 				generate();
 			}
 		}
+
+		function menuChange(x) {
+            x.classList.toggle('change');
+            $('.infoWindowOverlay').toggleClass('show');
+            $('.infoWindow').toggleClass('show');
+        }
 
 	</script>
 </body>
