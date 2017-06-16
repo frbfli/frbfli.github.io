@@ -28,6 +28,7 @@
 		    text-decoration: none;
 		    display: inline-block;
 		    font-size: 3em;
+		    margin-top: 20px;
 		}
 		#container {
 			width: 100%;
@@ -36,6 +37,30 @@
 			background-size: cover;
 			background-repeat: no-repeat;
 			background-position: center center;
+		}
+
+		.infoBox {
+			position: absolute;
+			left: 50%;
+			bottom: 14px;
+			transform: translate(-50%);
+		}
+
+		.infoBox div {
+			display: block;
+			height: 60px;
+			line-height: 60px;
+		}
+
+		.infoBox img {
+			float: left;
+			height: 60px;
+			margin-right: 10px;
+			width: 60px;
+		}
+
+		.infoBox span {
+			color: white;
 		}
 
 		#hideView {
@@ -61,14 +86,16 @@
 	</style>
 </head>
 <body onload="preLoad()">
-	<div id="generate" value="Generate" onclick="generate()" class="button" style="position: absolute; left: 50%; bottom: 14px; transform: translate(-50%);">Generate</div>
 	<div id="container" style="margin: 0px auto; width: 720px; transform: translate(-50%, -50%); position: absolute; left: 50%; top:50%;">
 		<canvas id="map" width="720" height="720"></canvas>
-		<img src="images/ba.png" id="ba" style="display:none;" />
-		<img src="images/fg.png" id="fg" style="display:none;" />
-		<img src="images/fo.png" id="fo" style="display:none;" />
-		<img src="images/ob.png" id="ob" style="display:none;" />
-		<img src="images/rg.png" id="rg" style="display:none;" />
+	</div>
+	<div class="infoBox">
+		<div><img src="images/ba.png" id="ba" /><span>- Barrier</span></div>
+		<div><img src="images/fg.png" id="fg" /><span>- Fast Ground</span></div>
+		<div><img src="images/fo.png" id="fo" /><span>- Forest</span></div>
+		<div><img src="images/ob.png" id="ob" /><span>- Obstruction</span></div>
+		<div><img src="images/rg.png" id="rg" /><span>- Rough Ground</span></div>
+		<div id="generate" value="Generate" onclick="generate()" class="button">Generate</div>
 	</div>
 	<div id="hideView">This app is designed for portrait mode only. Please rotate your device.<br />
 		<a href='http://www.freepik.com/free-vector/cartoon-icons_1076838.htm'>Designed by Freepik</a> - Barrel
