@@ -214,9 +214,13 @@
 	</script>
 	<script>
 
+		document.ontouchmove = function(e) {
+			e.preventDefault();
+		}
+
 		var c = document.getElementById("map");
 		var ctx = c.getContext("2d");
-		var masterWidth = window.outerWidth;
+		var masterWidth = window.innerWidth;
 
 
 		c.width = masterWidth;
