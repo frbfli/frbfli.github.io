@@ -20,6 +20,8 @@
 			margin: 0;
 			width: 100%;
 			height: 100%;
+			overflow-x: hidden;
+			overflow-y: hidden;
 		}
 		body, #hideView {
 			background-color: #272a2e;
@@ -38,12 +40,13 @@
 		}
 
 		.infoBox {
-			font-size: 2.2em;
-			width: 480px;	
+		    font-size: 2.2em;
+		    width: 100%;
+		    max-width: 900px;
 		}
 
+
 		.infoBox .infoBoxInner {
-			display: inline-block;
 			height: 60px;
 			line-height: 60px;
 			margin: 10px;
@@ -98,22 +101,25 @@
 		  z-index: 999;
 		}
 		.infoWindow {
-			background-color: #242424;
-			color: white;
-			height: 600px;
-			left: 50%;
-			opacity: 0;
-			padding: 10px;
-			position: absolute;
-			top: 50%;
-			transform: translate(-50%, -50%);
-			transition: all 0.2s ease 0s;
-			visibility: hidden;
-			width: 650px;
+		    background-color: #242424;
+		    color: white;
+		    height: 100%;
+		    left: 50%;
+		    opacity: 0;
+		    padding: 10px;
+		    position: absolute;
+		    top: 50%;
+		    transform: translate(-50%, -50%);
+		    transition: all 0.2s ease 0s;
+		    visibility: hidden;
+		    width: 100%;
+		    max-width: 1000px;
+		    max-height: 700px;
+		    margin: 10px;
 		}
 
 		.infoWindow p {
-			font-size: 8pt;
+			font-size: 0.75em;
 		}
 
 		.infoWindow a {
@@ -201,10 +207,10 @@
 
 
 	<script type="text/javascript">
-		if (window.navigator.standalone != true)
-		{
-			alert("This page works best when added to your homescreen as a standalone app on iOS or Android devices.");
-		}
+		// if (window.navigator.standalone != true)
+		// {
+		// 	alert("This page works best when added to your homescreen as a standalone app on iOS or Android devices.");
+		// }
 	</script>
 	<script>
 
