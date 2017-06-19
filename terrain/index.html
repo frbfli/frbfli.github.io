@@ -216,18 +216,19 @@
 
 		var c = document.getElementById("map");
 		var ctx = c.getContext("2d");
+		var masterWidth = window.outerWidth;
 
 
-		c.width = window.innerWidth;
-		c.height = window.innerWidth;;
+		c.width = masterWidth;
+		c.height = masterWidth;;
 
-		$('#c').width = window.innerWidth;
-		$('#c').height = window.innerWidth;
+		$('#c').width = masterWidth;
+		$('#c').height = masterWidth;
 
-		$('#container').width(window.innerWidth);
-		$('#container').height(window.innerWidth);
+		$('#container').width(masterWidth);
+		$('#container').height(masterWidth);
 
-		var scale = window.innerWidth / 360;
+		var scale = masterWidth / 360;
 
 		var terrainDistance = 60 * scale;
 		var sizeMultiplier = 10 * scale;
