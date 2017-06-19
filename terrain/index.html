@@ -195,22 +195,22 @@
 			<div class="infoBoxInner"><img src="images/rg.png" id="rg" /><span>- Rough Ground</span></div>
 			<div style="clear: both;"></div>
 		</div>
-		<p><a href='http://www.freepik.com/free-vector/cartoon-icons_1076838.htm'>Designed by Freepik</a> - Barrel</p>
-		<p><a href="http://www.freepik.com/free-vector/flowers-in-the-garden_895580.htm">Designed by Freepik</a> - Wall</p>
-		<p><a href="http://www.freepik.com/free-vector/melting-ice-cube-vector_586904.htm">Designed by Freepik</a> - Ice</p>
-		<p><a href="http://www.freepik.com/free-vector/diverse-trees-cartoon-pack_742874.htm">Designed by Freepik</a> - Tree</p>
-		<p><a href="http://www.freepik.com/free-vector/stones-cartoon_997676.htm">Designed by Freepik</a> - Rocks</p>
 		<p>Guild Ball and the Guild Ball logo are trademarks of Steamforged Games Ltd.</p>
-		<p>This app is not affiliated with or endorsed by SFG.</p>
-		<p>Pitch image by <a href="http://matt-adlard.deviantart.com/art/Guildball-Grass-Mat-544684677" alt="Pitch source">Matt Adlard</a>.</p>
+		<p>This app is provided 'as is' and is in no way affiliated with or endorsed by Steamforged Games Ltd.</p>
+		<p>Pitch Image by <a href="http://matt-adlard.deviantart.com/art/Guildball-Grass-Mat-544684677">Matt Adlard</a>.</p>
+		<p>Obstruction Image <a href='http://www.freepik.com/free-vector/cartoon-icons_1076838.htm'>Designed by Freepik</a> </p>
+		<p>Barrier Image <a href="http://www.freepik.com/free-vector/flowers-in-the-garden_895580.htm">Designed by Freepik</a></p>
+		<p>Fast Ground Image <a href="http://www.freepik.com/free-vector/melting-ice-cube-vector_586904.htm">Designed by Freepik</a></p>
+		<p>Forest Image <a href="http://www.freepik.com/free-vector/diverse-trees-cartoon-pack_742874.htm">Designed by Freepik</a></p>
+		<p>Rough Ground Image <a href="http://www.freepik.com/free-vector/stones-cartoon_997676.htm">Designed by Freepik</a></p>
 	</div>
 
 
 	<script type="text/javascript">
-		// if (window.navigator.standalone != true)
-		// {
-		// 	alert("This page works best when added to your homescreen as a standalone app on iOS or Android devices.");
-		// }
+		if (window.navigator.standalone != true)
+		{
+			alert("For best experience, please add this website to your device's home screen.");
+		}
 	</script>
 	<script>
 
@@ -229,7 +229,6 @@
 
 		var scale = window.innerWidth / 360;
 
-		// var scale = 2;
 		var terrainDistance = 60 * scale;
 		var sizeMultiplier = 10 * scale;
 
@@ -242,64 +241,48 @@
 			this.midY = midY;
 		}
 
-		var TerrainType = function(name, size) {
-			this.name = name;
-			this.size = size;
-		}
-
 		var terrainArray = [];
 
 		var types = [
+			"obstruction",
+			"barrier",
 			"fast",
 			"rough",
-			"forest",
-			"obstruction",
-			"barrier"
+			"forest"
 		];
 
-		var type = [];
-
-		var loc = [];
+		var terrainType = [];
 
 		var checkAttempt = 0;
 
-		function rando(min, max) {
-			var n = Math.floor(Math.random() * (1 + max - min)) + min;
-			return n;
+		function randomGen(min, max) {
+			var num = Math.floor(Math.random() * (1 + max - min)) + min;
+			return num;
 		}
 
-		function setTypes(check) {
-			// get number of ground/terrain pieces
-			var n = rando(4,6);
+		function setTerrain() {
+			var n = randomGen(4,6);
 
-			// get number of obstructions (50%+)
 			var ob = Math.ceil(n / 2);
 
-			// set counters for barrier, forest, and fast ground types
 			var barrier = 0;
 			var forest = 0;
 			var fast = 0;
 
-			// get ground/terrain type for each piece
 			for (var i = 0; i < n; i++) {
 				if (i < ob) {
-					type[i] = "obstruction";
+					terrainType[i] = "obstruction";
 				}
 				else {
-					// choose a random ground/terrain type
-					type[i] = types[rando(0,types.length - 1)];
-					// redo if result is second barrier, second forest, or third fast ground
-					while(barrier > 0 && type[i] == "barrier" || forest > 0 && type[i] == "forest" || fast > 1 && type[i] == "fast") {
-						type[i] = types[rando(0,types.length - 1)];
+					terrainType[i] = types[randomGen(0,types.length - 1)];
+					while(barrier > 0 && terrainType[i] == "barrier" || forest > 0 && terrainType[i] == "forest" || fast > 1 && terrainType[i] == "fast") {
+						terrainType[i] = types[randomGen(0,types.length - 1)];
 					}
-					// if result is barrier, increase barrier counter
-					if (type[i] == "barrier") { barrier++; }
-					// if result is forest, increase forest counter
-					else if (type[i] == "forest") { forest++; }
-					// if result is fast ground, increase fast ground counter
-					else if (type[i] == "fast") { fast++; }
+					if (terrainType[i] == "barrier") { barrier++; }
+					else if (terrainType[i] == "forest") { forest++; }
+					else if (terrainType[i] == "fast") { fast++; }
 				}
-				genCoords(type[i]);
+				genCoords(terrainType[i]);
 			}
 		}
 
@@ -308,9 +291,7 @@
 			var canPlace = false;
 			var checkAttemptValue;
 
-			// while (!canPlace) {
 				var checkPlace;
-				// for (var i = 0; i < type.length; i++) {
 				if (tempTerrain == "fast") {
 					coin = Math.floor(Math.random() * 2) + 1;  
 					if (coin < 2) {
@@ -359,10 +340,6 @@
 					terrainArray.push(new Terrain(tempTerrain, tempCoords.x, tempCoords.y, tempCoords.size, tempCoords.midX, tempCoords.midY));
 					checkAttempt = 0;
 				}
-				
-				
-			// }
-			// }
 		}
 
 		function fixTerrain(t) {
@@ -461,20 +438,17 @@
 			document.getElementById('container').style.height = contentHeight;
 			document.getElementById('container').style.width = contentWidth;
 
-			// setTypes();
-			// paintTerrain();
 			generate();
 
 		}
 
 		function generate() {
 			terrainArray = [];
-			type = [];
-			loc = [];
+			terrainType = [];
 			checkAttempt = 0;
 
 			ctx.clearRect(0,0,c.width, c.height);
-			setTypes();
+			setTerrain();
 			if (terrainArray.length >= 4) {
 				paintTerrain();
 			} else {
