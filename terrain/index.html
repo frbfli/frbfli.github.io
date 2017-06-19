@@ -20,8 +20,6 @@
 			margin: 0;
 			width: 100%;
 			height: 100%;
-			overflow-x: hidden;
-			overflow-y: hidden;
 		}
 		body, #hideView {
 			background-color: #272a2e;
@@ -213,11 +211,6 @@
 		}
 	</script>
 	<script>
-
-		document.ontouchmove = function(e) {
-			e.preventDefault();
-		}
-
 		var c = document.getElementById("map");
 		var ctx = c.getContext("2d");
 		var masterWidth = window.innerWidth;
