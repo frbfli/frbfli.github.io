@@ -1,0 +1,151 @@
+html, body {
+	margin: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+body, #hideView {
+	background-color: #272a2e;
+	background-image: url("images/gb_logo.png");
+	background-repeat: repeat-y;
+	background-position: center center;
+	background-size: cover;
+}
+#container {
+	width: 100%;
+	max-height: 100%;
+	background-image: url("images/pitch.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+.infoBox {
+    font-size: 2.2em;
+    width: 100%;
+    max-width: 900px;
+}
+
+.infoBox .infoBoxInner {
+    height: 60px;
+    line-height: 60px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+.infoBox img {
+	float: left;
+	height: 60px;
+	margin-right: 10px;
+	width: 60px;
+}
+
+.infoBox span {
+	color: white;
+}
+
+.button {
+	background-color: #4caf50;
+	border: medium none;
+	bottom: 0;
+	color: white;
+	display: inline-block;
+	font-size: 3em;
+	left: 50%;
+	padding: 15px 32px;
+	position: absolute;
+	text-align: center;
+	text-decoration: none;
+	transform: translate(-50%);
+}
+
+#hideView {
+	position: fixed;
+	top: 0;
+	right: 0;
+	left: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	padding: 0.3em;
+	text-align: center;
+	display: none;
+	color: white;
+}
+
+.menuContainer {
+  display: inline-block;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 999;
+}
+.infoWindow {
+    background-color: #242424;
+    color: white;
+    height: 100%;
+    left: 50%;
+    opacity: 0;
+    padding: 10px;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 0.2s ease 0s;
+    visibility: hidden;
+    width: 100%;
+    max-width: 1000px;
+    max-height: 700px;
+    margin: 10px;
+}
+
+.infoWindow p {
+	font-size: 0.75em;
+}
+
+.infoWindow a {
+	color: white;
+}
+
+.infoWindowOverlay {
+	background-color: rgba(0,0,0,0.75);
+	width:100%;
+	height:100%;
+	position: absolute;
+	opacity: 0;
+	visibility: hidden;
+	transition: all 0.2s;
+}
+
+.show {
+	visibility: visible;
+	opacity: 1;
+}
+
+.bar1, .bar2, .bar3 {
+  width: 55px;
+  height: 10px;
+  background-color: white;
+  margin: 6px 0;
+  transition: 0.4s;
+}
+
+.change .bar1 {
+    -webkit-transform: rotate(-45deg) translate(-15px, 12px);
+    transform: rotate(-45deg) translate(-15px, 12px);
+}
+
+.change .bar2 {
+  opacity: 0;
+}
+
+.change .bar3 {
+  -webkit-transform: rotate(45deg) translate(-8px, -8px) ;
+  transform: rotate(45deg) translate(-8px, -8px) ;
+}
+
+@media screen and (max-device-width:800px) and (orientation:landscape) {
+	#hideView {
+		display: block;
+	}
+}
