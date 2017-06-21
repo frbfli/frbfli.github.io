@@ -160,8 +160,8 @@ body,
 
 .popUp {
     position: absolute;
-    width: 400px;
-    height: 70px;
+    width: 600px;
+    height: 150px;
     text-align: center;
     background-color: #fff;
     border: 8px solid #333;
@@ -172,6 +172,7 @@ body,
     opacity: 0;
     transition: 0.4s;
     padding: 10px;
+    font-size: 2em;
 }
 
 .popUp:before {
@@ -179,8 +180,8 @@ body,
 	position: absolute;
 	width: 0;
 	height: 0;
-	left: 180px;
-	top: 90px;
+	left: 280px;
+	top: 170px;
 	border: 25px solid;
 	border-color: #333 transparent transparent transparent;
 }
@@ -190,8 +191,8 @@ body,
   position: absolute;
   width: 0;
   height: 0;
-  left: 190px;
-  top: 90px;
+  left: 290px;
+  top: 170px;
   border: 15px solid;
   border-color: #fff transparent transparent transparent;
 }
