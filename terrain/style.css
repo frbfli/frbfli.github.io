@@ -161,7 +161,7 @@ body,
         display: block;
     }
 }
-@media screen and (min-device-width: 900px) {
+@media screen and (max-device-width: 900px) {
 	.bar1, .bar2, .bar3 {
 	    width: 135px;
 	    height: 30px;
