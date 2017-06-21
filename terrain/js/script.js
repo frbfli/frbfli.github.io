@@ -214,6 +214,8 @@ function rectsColliding(rect1, rect2) {
 
 function preLoad() {
 
+	setListeners();
+
     var windowHeight = window.innerHeight;
     var windowWidth = window.innerWidth;
 
@@ -259,4 +261,14 @@ function menuChange(x) {
 function heartChange(x) {
 	x.classList.toggle('change');
 	$('.heartWindow').toggleClass('show');
+}
+
+function setListeners() {
+	$('.infoWindowOverlay').click(function() {
+		$('.infoWindowOverlay').removeClass('show');
+	    $('.infoWindow').removeClass('show');
+	    $('.heartContainer').removeClass('show');
+	    $('.heartWindow').removeClass('show');
+	    $('.menuContainer').removeClass('change');
+	})
 }
