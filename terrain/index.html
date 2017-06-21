@@ -15,14 +15,16 @@
 	<link href="manifest.json" rel="manifest">
 	<link rel="stylesheet" href="style.css">
 	<title>Guild Ball Terrain Generator</title>
-	<script src="js/jquery-3.2.1.min.js"></script>
-	
+	<script src="js/jquery-3.2.1.min.js"></script>	
 </head>
 <body onload="preLoad()">
 	<div class="menuContainer" onclick="menuChange(this)">
         <div class="bar1"></div>
         <div class="bar2"></div>
         <div class="bar3"></div>
+    </div>
+    <div class="heartContainer" onclick="heartChange(this)">
+    	<div class="heartBox">&hearts;</div>
     </div>
 	<div id="container" style="margin: 0px auto; width: 720px; transform: translate(-50%, -50%); position: absolute; left: 50%; top:50%;">
 		<canvas id="map" width="720" height="720"></canvas>
@@ -51,8 +53,11 @@
 		<p>Forest Image <a href="http://www.freepik.com/free-vector/diverse-trees-cartoon-pack_742874.htm">Designed by Freepik</a></p>
 		<p>Rough Ground Image <a href="http://www.freepik.com/free-vector/stones-cartoon_997676.htm">Designed by Freepik</a></p>
 	</div>
-
-
+	<div class="heartWindow">
+		<div class="heartInner">
+			<img src="images/qr.png" style="width:100%;">
+		</div>
+	</div>
 	<script type="text/javascript">
 		if (window.navigator.standalone != true)
 		{
