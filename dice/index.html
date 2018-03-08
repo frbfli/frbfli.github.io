@@ -1,12 +1,19 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Dice</title>
+	<title>Page Title</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
-	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+	<style>
+		.center {
+		    text-align: center;
+		}
+	</style>
+
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
 	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
 </head>
 <body>
@@ -14,17 +21,37 @@
 <div data-role="page">
 
 	<div data-role="header">
-		<h1>Page Title</h1>
+		<h1>Legion Dice</h1>
 	</div><!-- /header -->
 
-	<div role="main" class="ui-content">
-		<p>Page content goes here.</p>
+	<div role="main" class="ui-content center">
+		<div class="ui-grid-b center">
+			<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:30px">White</div></div>
+		    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:30px">Black</div></div>
+		    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:30px">Red</div></div>
+		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline">Button</a></div>
+		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline">Button</a></div>
+		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline">Button</a></div>
+		    <div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="number-pattern" value="" type="number"></div></div>
+		    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="number-pattern" value="" type="number"></div></div>
+		    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="number-pattern" value="" type="number"></div></div>
+		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline">Button</a></div>
+		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline">Button</a></div>
+		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline">Button</a></div>
+		</div>
 	</div><!-- /content -->
 
 	<div data-role="footer">
-		<h4>Page Footer</h4>
+		<h4>Created by Fli</h4>
 	</div><!-- /footer -->
 </div><!-- /page -->
+
+
+<script>
+	$(document).ready(function() {
+		console.log('ready');
+	});
+</script>
 
 </body>
 </html>
