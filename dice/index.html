@@ -38,27 +38,45 @@
 	</div><!-- /header -->
 
 	<div role="main" class="ui-content center">
-		<div class="ui-grid-b center">
-			<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:30px">White</div></div>
-		    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:30px">Black</div></div>
-		    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:30px">Red</div></div>
-		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteAUp">Button</a></div>
-		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="blackAUp">Button</a></div>
-		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="redAUp">Button</a></div>
-		    <div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="WA" value="0" type="number" class="attackValue"></div></div>
-		    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="BA" value="0" type="number" class="attackValue"></div></div>
-		    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="RA" value="0" type="number" class="attackValue"></div></div>
-		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteADown">Button</a></div>
-		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="blackADown">Button</a></div>
-		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="redADown">Button</a></div>
+		<div data-role="collapsibleset" data-theme="a" data-content-theme="a" data-collapsed-icon="arrow-r" data-expanded-icon="arrow-d">
+		    <div data-role="collapsible">
+		        <h3 class="collapseDice">Attack Dice</h3>
+		    	<div class="ui-grid-b center">
+					<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:30px">White</div></div>
+				    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:30px">Black</div></div>
+				    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:30px">Red</div></div>
+				    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteAUp">Button</a></div>
+				    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="blackAUp">Button</a></div>
+				    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="redAUp">Button</a></div>
+				    <div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="WA" value="0" type="number" class="attackValue"></div></div>
+				    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="BA" value="0" type="number" class="attackValue"></div></div>
+				    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="RA" value="0" type="number" class="attackValue"></div></div>
+				    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteADown">Button</a></div>
+				    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="blackADown">Button</a></div>
+				    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="redADown">Button</a></div>
+				</div>
+		    </div>
+		    <div data-role="collapsible">
+		        <h3 class="collapseDice">Defense Dice</h3>
+		        <div class="ui-grid-a center">
+		        	<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:30px">White</div></div>
+				    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:30px">Red</div></div>
+				    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteDUp">Button</a></div>
+				    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="redDUp">Button</a></div>
+				    <div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="WD" value="0" type="number" class="defenseValue"></div></div>
+				    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="RD" value="0" type="number" class="defenseValue"></div></div>
+				    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteDDown">Button</a></div>
+				    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="redDDown">Button</a></div>
+		        </div>	    	
+		    </div>
 		</div>
 		<div class="ui-grid-solo">
-		    <div class="ui-block-a"><a href="#" class="ui-btn ui-shadow ui-corner-all" id="rollAttack">Roll</a></div>
+		    <div class="ui-block-a"><a href="#" class="ui-btn ui-shadow ui-corner-all" id="rollDice">Roll</a></div>
 		</div>
 		<div class="ui-grid-solo">
 		    <div class="ui-block-a"><a href="#" class="ui-btn ui-btn-b ui-shadow ui-corner-all" id="resetButton">Reset</a></div>
 		</div>
-		<div id="rollResult">
+		<div id="rollResult" style="text-align: left;">
 		</div>
 	</div><!-- /content -->
 
@@ -94,12 +112,12 @@
 		this.sides = sides;
 	}
 
-	var redA = ['crit', 'hit', 'hit', 'hit', 'hit', 'hit', 'surge', 'blank'];
-	var blackA = ['crit', 'hit', 'hit', 'hit', 'surge', 'blank', 'blank', 'blank'];
-	var whiteA = ['crit', 'hit', 'hit', 'surge', 'blank', 'blank', 'blank', 'blank'];
+	var redA = ['Critical Hit', 'Hit', 'Hit', 'Hit', 'Hit', 'Hit', 'Surge', 'Blank'];
+	var blackA = ['Critical Hit', 'Hit', 'Hit', 'Hit', 'Surge', 'Blank', 'Blank', 'Blank'];
+	var whiteA = ['Critical Hit', 'Hit', 'Hit', 'Surge', 'Blank', 'Blank', 'Blank', 'Blank'];
 
-	var whiteD = ['block', 'surge', 'blank', 'blank', 'blank', 'blank'];
-	var redD = ['block', 'block', 'block', 'surge', 'blank', 'blank'];
+	var whiteD = ['Block', 'Surge', 'Blank', 'Blank', 'Blank', 'Blank'];
+	var redD = ['Block', 'Block', 'Block', 'Surge', 'Blank', 'Blank'];
 
 	$(document).ready(function() {
 		$('.dice').on('click', function() {
@@ -140,29 +158,68 @@
 					}
 					$('#RA').val(tempDieVal);
 					break;
+				case 'whiteDUp':
+					tempDieVal = parseInt($("#WD").val()) + 1;
+					$('#WD').val(tempDieVal);
+					break;
+				case 'whiteDDown':
+					tempDieVal = parseInt($("#WD").val()) - 1;
+					if (tempDieVal < 0) {
+						tempDieVal = 0;
+					}
+					$('#WD').val(tempDieVal);
+					break;
+				case 'redDUp':
+					tempDieVal = parseInt($("#RD").val()) + 1;
+					$('#RD').val(tempDieVal);
+					break;
+				case 'redDDown':
+					tempDieVal = parseInt($("#RD").val()) - 1;
+					if (tempDieVal < 0) {
+						tempDieVal = 0;
+					}
+					$('#RD').val(tempDieVal);
+					break;
 			}
 		});
 
 		$('#resetButton').on('click', function() {
 			$('.attackValue').val(0);
+			$('.defenseValue').val(0);
 			$('#rollResult').html('');
 		});
 
-		$('#rollAttack').on('click', function() {
+		$('.collapseDice').on('click', function() {
+			$('.attackValue').val(0);
+			$('.defenseValue').val(0);
+			$('#rollResult').html('');
+		});
+
+		$('#rollDice').on('click', function() {
 			$('#rollResult').html('');
 			var whiteAttack = parseInt($('#WA').val());
 			var blackAttack = parseInt($('#BA').val());
 			var redAttack = parseInt($('#RA').val());
 
+			var whiteDefense = parseInt($('#WD').val());
+			var redDefense = parseInt($('#RD').val());
+
 			var whiteAttackPool = [];
 			var blackAttackPool = [];
 			var redAttackPool = [];
 
+			var whiteDefensePool = [];
+			var redDefensePool = [];
+
 			var attackDicePool = [];
+			var defenseDicePool = [];
 
 			var whiteAx = 0;
 			var blackAx = 0;
 			var redAx = 0;
+
+			var whiteDx = 0;
+			var redDx = 0;
 
 			while (whiteAx < whiteAttack) {
 				whiteAttackPool.push('whiteAttack_' + whiteAx);
@@ -179,6 +236,16 @@
 				redAx++;
 			}
 
+			while (whiteDx < whiteDefense) {
+				whiteDefensePool.push('whiteDefense_' + whiteDx);
+				whiteDx++;
+			}
+
+			while (redDx < redDefense) {
+				redDefensePool.push('redDefense_' + redDx);
+				redDx++;
+			}
+
 			for (x in whiteAttackPool) {
 				attackDicePool.push(whiteAttackPool[x]);
 			}
@@ -191,13 +258,22 @@
 				attackDicePool.push(redAttackPool[x]);
 			}
 
-			roll(attackDicePool);
+			for (x in whiteDefensePool) {
+				defenseDicePool.push(whiteDefensePool[x]);
+			}
+
+			for (x in redDefensePool) {
+				defenseDicePool.push(redDefensePool[x]);
+			}
+
+			roll(attackDicePool, 8);
+			roll(defenseDicePool, 6);
 
 		});
 
 	});
 
-	function roll(d) {
+	function roll(d, n) {
 		var diePool = [];
 		for (x in d) {
 			var tempDie = d[x].split('_');
@@ -212,12 +288,16 @@
 				case "redAttack":
 					diePool.push(new Dice('red', redA));
 					break;
+				case "whiteDefense":
+					diePool.push(new Dice('white', whiteD));
+					break;
+				case "redDefense":
+					diePool.push(new Dice('red', redD));
+					break;
 			}
 		}
-		// console.log(diePool);
 		for (x in diePool) {
-			// console.log(diePool[x].color, diePool[x].sides[returnRandom(8)]);
-			$('#rollResult').append('<p><b>' + diePool[x].color + '</b>&nbsp;' + diePool[x].sides[returnRandom(8)] + '</p>');
+			$('#rollResult').append('<p><b>' + diePool[x].color + ':</b>&nbsp;' + diePool[x].sides[returnRandom(n)] + '</p>');
 		}
 	}
 
