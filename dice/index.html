@@ -187,22 +187,21 @@
 		$('#resetButton').on('click', function() {
 			$('.attackValue').val(0);
 			$('.defenseValue').val(0);
-			$('#rollResult').html('');
+			$('#rollResult').hide().html('').fadeIn('slow');
 		});
 
 		$('.collapseDice').on('click', function() {
 			$('.attackValue').val(0);
 			$('.defenseValue').val(0);
-			$('#rollResult').html('');
+			$('#rollResult').hide().html('').fadeIn('slow');
 		});
 
 		$('#rollResult').on('click', '.reRollDie', function() {
-			// console.log($(this).attr('data-reRoll'));
 			reRoll($(this).attr('data-reRoll'));
 		});
 
 		$('#rollDice').on('click', function() {
-			$('#rollResult').html('');
+			$('#rollResult').hide().html('').fadeIn('slow');
 			var whiteAttack = parseInt($('#WA').val());
 			var blackAttack = parseInt($('#BA').val());
 			var redAttack = parseInt($('#RA').val());
@@ -318,7 +317,7 @@
 	function reRoll(d) {
 		var data = d.split('_');
 		var newResult = (diePool[data[1]].sides[returnRandom(diePool[data[1]].sides.length)]);
-		$('#reRollSide_' + data[1]).html('<p>' + newResult + '</p>');
+		$('#reRollSide_' + data[1]).hide().html('<p>' + newResult + '</p>').fadeIn('slow');
 	}
 
 	function returnRandom(max) {
