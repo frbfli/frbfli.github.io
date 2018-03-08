@@ -39,6 +39,12 @@
 		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="blackADown">Button</a></div>
 		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="redADown">Button</a></div>
 		</div>
+		<div class="ui-grid-solo">
+		    <div class="ui-block-a"><a href="#" class="ui-btn ui-shadow ui-corner-all">Roll</a></div>
+		</div>
+		<div class="ui-grid-solo">
+		    <div class="ui-block-a"><a href="#" class="ui-btn ui-shadow ui-corner-all">Reset</a></div>
+		</div>
 	</div><!-- /content -->
 
 	<div data-role="footer">
@@ -82,7 +88,44 @@
 
 
 		$('.dice').on('click', function() {
-			console.log($(this).attr('data-type'));
+			var tempDieVal = 0;
+			var diceAction = $(this).attr('data-type');
+
+			switch(diceAction) {
+				case 'whiteAUp':
+					tempDieVal = parseInt($('#WA').val()) + 1;
+					$('#WA').val(tempDieVal);
+					break;
+				case 'whiteADown':
+					tempDieVal = parseInt($('#WA').val()) - 1;
+					if (tempDieVal < 0) {
+						tempDieVal = 0;
+					}
+					$('#WA').val(tempDieVal);
+					break;
+				case 'blackAUp':
+					tempDieVal = parseInt($('#BA').val()) + 1;
+					$('#BA').val(tempDieVal);
+					break;
+				case 'blackADown':
+					tempDieVal = parseInt($('#BA').val()) - 1;
+					if (tempDieVal < 0) {
+						tempDieVal = 0;
+					}
+					$('#BA').val(tempDieVal);
+					break;
+				case 'redAUp':
+					tempDieVal = parseInt($('#RA').val()) + 1;
+					$('#RA').val(tempDieVal);
+					break;
+				case 'redADown':
+					tempDieVal = parseInt($('#RA').val()) - 1;
+					if (tempDieVal < 0) {
+						tempDieVal = 0;
+					}
+					$('#RA').val(tempDieVal);
+					break;
+			}
 		});
 
 	});
