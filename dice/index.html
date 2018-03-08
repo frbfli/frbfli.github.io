@@ -29,15 +29,15 @@
 			<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:30px">White</div></div>
 		    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:30px">Black</div></div>
 		    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:30px">Red</div></div>
-		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline">Button</a></div>
-		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline">Button</a></div>
-		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline">Button</a></div>
-		    <div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="number-pattern" value="" type="number"></div></div>
-		    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="number-pattern" value="" type="number"></div></div>
-		    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="number-pattern" value="" type="number"></div></div>
-		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline">Button</a></div>
-		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline">Button</a></div>
-		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline">Button</a></div>
+		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteAUp">Button</a></div>
+		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="blackAUp">Button</a></div>
+		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="redAUp">Button</a></div>
+		    <div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="WA" value="0" type="number"></div></div>
+		    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="BA" value="0" type="number"></div></div>
+		    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="RA" value="0" type="number"></div></div>
+		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteADown">Button</a></div>
+		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="blackADown">Button</a></div>
+		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="redADown">Button</a></div>
 		</div>
 	</div><!-- /content -->
 
@@ -48,8 +48,43 @@
 
 
 <script>
+	var AttackDice = function(color, id, s1, s2, s3, s4, s5, s6, s7, s8) {
+		this.id = id;
+		this.color = color;
+		this.s1 = s1;
+		this.s2 = s2;
+		this.s3 = s3;
+		this.s4 = s4;
+		this.s5 = s5;
+		this.s6 = s6;
+		this.s7 = s7;
+		this.s8 = s8;
+	}
+
+	var DefenseDice = function(color, id, s1, s2, s3, s4, s5, s6) {
+		this.id = id;
+		this.color = color;
+		this.s1 = s1;
+		this.s2 = s2;
+		this.s3 = s3;
+		this.s4 = s4;
+		this.s5 = s5;
+		this.s6 = s6;
+	}
+
 	$(document).ready(function() {
-		console.log('ready');
+		var redA = new AttackDice('red', 1, 'crit', 'hit', 'hit', 'hit', 'hit', 'hit', 'surge', 'blank');
+		var blackA = new AttackDice('black', 2, 'crit', 'hit', 'hit', 'hit', 'surge', 'blank', 'blank', 'blank');
+		var whiteA = new AttackDice('white', 3, 'crit', 'hit', 'hit', 'surge', 'blank', 'blank', 'blank', 'blank');
+
+		var whiteD = new DefenseDice('white', 1, 'block', 'surge', 'blank', 'blank', 'blank', 'blank');
+		var redD = new DefenseDice('red', 2, 'block', 'block', 'block', 'surge', 'blank', 'blank');
+
+
+		$('.dice').on('click', function() {
+			console.log($(this).attr('data-type'));
+		});
+
 	});
 </script>
 
