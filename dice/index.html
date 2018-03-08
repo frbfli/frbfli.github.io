@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Page Title</title>
+	<title>Legion Dice</title>
 
 	<meta content="yes" name="apple-mobile-web-app-capable">
 	<meta content="yes" name="mobile-web-app-capable">
@@ -13,6 +13,12 @@
 	<style>
 		.center {
 		    text-align: center;
+		}
+		.redButton {
+			background-color: #AD3131;
+			color: white;
+			text-shadow: unset;
+			font-weight: unset;
 		}
 	</style>
 
@@ -35,18 +41,20 @@
 		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteAUp">Button</a></div>
 		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="blackAUp">Button</a></div>
 		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="redAUp">Button</a></div>
-		    <div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="WA" value="0" type="number"></div></div>
-		    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="BA" value="0" type="number"></div></div>
-		    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="RA" value="0" type="number"></div></div>
+		    <div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="WA" value="0" type="number" class="attackValue"></div></div>
+		    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="BA" value="0" type="number" class="attackValue"></div></div>
+		    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="RA" value="0" type="number" class="attackValue"></div></div>
 		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteADown">Button</a></div>
 		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="blackADown">Button</a></div>
 		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="redADown">Button</a></div>
 		</div>
 		<div class="ui-grid-solo">
-		    <div class="ui-block-a"><a href="#" class="ui-btn ui-shadow ui-corner-all">Rol</a></div>
+		    <div class="ui-block-a"><a href="#" class="ui-btn ui-shadow ui-corner-all" id="rollAttack">Roll</a></div>
 		</div>
 		<div class="ui-grid-solo">
-		    <div class="ui-block-a"><a href="#" class="ui-btn ui-shadow ui-corner-all">Reset</a></div>
+		    <div class="ui-block-a"><a href="#" class="ui-btn ui-shadow ui-corner-all" id="resetButton">Reset</a></div>
+		</div>
+		<div id="rollResult">
 		</div>
 	</div><!-- /content -->
 
@@ -57,9 +65,7 @@
 
 
 <script>
-	var AttackDice = function(color, id, s1, s2, s3, s4, s5, s6, s7, s8) {
-		this.id = id;
-		this.color = color;
+	var AttackDice = function(s1, s2, s3, s4, s5, s6, s7, s8) {
 		this.s1 = s1;
 		this.s2 = s2;
 		this.s3 = s3;
@@ -70,9 +76,7 @@
 		this.s8 = s8;
 	}
 
-	var DefenseDice = function(color, id, s1, s2, s3, s4, s5, s6) {
-		this.id = id;
-		this.color = color;
+	var DefenseDice = function(s1, s2, s3, s4, s5, s6) {
 		this.s1 = s1;
 		this.s2 = s2;
 		this.s3 = s3;
@@ -81,15 +85,19 @@
 		this.s6 = s6;
 	}
 
+	var Dice = function(color, sides) {
+		this.color = color;
+		this.sides = sides;
+	}
+
+	var redA = ['crit', 'hit', 'hit', 'hit', 'hit', 'hit', 'surge', 'blank'];
+	var blackA = ['crit', 'hit', 'hit', 'hit', 'surge', 'blank', 'blank', 'blank'];
+	var whiteA = ['crit', 'hit', 'hit', 'surge', 'blank', 'blank', 'blank', 'blank'];
+
+	var whiteD = ['block', 'surge', 'blank', 'blank', 'blank', 'blank'];
+	var redD = ['block', 'block', 'block', 'surge', 'blank', 'blank'];
+
 	$(document).ready(function() {
-		var redA = new AttackDice('red', 1, 'crit', 'hit', 'hit', 'hit', 'hit', 'hit', 'surge', 'blank');
-		var blackA = new AttackDice('black', 2, 'crit', 'hit', 'hit', 'hit', 'surge', 'blank', 'blank', 'blank');
-		var whiteA = new AttackDice('white', 3, 'crit', 'hit', 'hit', 'surge', 'blank', 'blank', 'blank', 'blank');
-
-		var whiteD = new DefenseDice('white', 1, 'block', 'surge', 'blank', 'blank', 'blank', 'blank');
-		var redD = new DefenseDice('red', 2, 'block', 'block', 'block', 'surge', 'blank', 'blank');
-
-
 		$('.dice').on('click', function() {
 			var tempDieVal = 0;
 			var diceAction = $(this).attr('data-type');
@@ -131,7 +139,88 @@
 			}
 		});
 
+		$('#resetButton').on('click', function() {
+			$('.attackValue').val(0);
+			$('#rollResult').html('');
+		});
+
+		$('#rollAttack').on('click', function() {
+			$('#rollResult').html('');
+			var whiteAttack = parseInt($('#WA').val());
+			var blackAttack = parseInt($('#BA').val());
+			var redAttack = parseInt($('#RA').val());
+
+			var whiteAttackPool = [];
+			var blackAttackPool = [];
+			var redAttackPool = [];
+
+			var attackDicePool = [];
+
+			var whiteAx = 0;
+			var blackAx = 0;
+			var redAx = 0;
+
+			while (whiteAx < whiteAttack) {
+				whiteAttackPool.push('whiteAttack_' + whiteAx);
+				whiteAx++;
+			}
+
+			while (blackAx < blackAttack) {
+				blackAttackPool.push('blackAttack_' + blackAx);
+				blackAx++;
+			}
+
+			while (redAx < redAttack) {
+				redAttackPool.push('redAttack_' + redAx);
+				redAx++;
+			}
+
+			for (x in whiteAttackPool) {
+				attackDicePool.push(whiteAttackPool[x]);
+			}
+
+			for (x in blackAttackPool) {
+				attackDicePool.push(blackAttackPool[x]);
+			}
+
+			for (x in redAttackPool) {
+				attackDicePool.push(redAttackPool[x]);
+			}
+
+			roll(attackDicePool);
+
+		});
+
 	});
+
+	function roll(d) {
+		var diePool = [];
+		for (x in d) {
+			var tempDie = d[x].split('_');
+			// console.log(tempDie[0], tempDie[1]);
+			switch(tempDie[0]) {
+				case "whiteAttack":
+					diePool.push(new Dice('white', whiteA));
+					break;
+				case "blackAttack":
+					diePool.push(new Dice('black', blackA));
+					break;
+				case "redAttack":
+					diePool.push(new Dice('red', redA));
+					break;
+			}
+		}
+		// console.log(diePool);
+		for (x in diePool) {
+			// console.log(diePool[x].color, diePool[x].sides[returnRandom(8)]);
+			$('#rollResult').append('<p><b>' + diePool[x].color + '</b>&nbsp;' + diePool[x].sides[returnRandom(8)] + '</p>');
+		}
+	}
+
+	function returnRandom(max) {
+		return Math.floor(Math.random() * Math.floor(max));
+	}
+
 </script>
 
 </body>
