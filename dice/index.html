@@ -13,6 +13,7 @@
   	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
   	<link rel="stylesheet" href="redTheme.min.css" />
   	<link rel="stylesheet" href="jquery.mobile.icons.min.css" />
+  	<link rel="stylesheet" href="xwing-miniatures.css" />
 
 	<style>
 		.center {
@@ -110,12 +111,12 @@
 		this.sides = sides;
 	}
 
-	var redA = ['Critical Hit', 'Hit', 'Hit', 'Hit', 'Hit', 'Hit', 'Surge', 'Blank'];
-	var blackA = ['Critical Hit', 'Hit', 'Hit', 'Hit', 'Surge', 'Blank', 'Blank', 'Blank'];
-	var whiteA = ['Critical Hit', 'Hit', 'Hit', 'Surge', 'Blank', 'Blank', 'Blank', 'Blank'];
+	var redA = ["<i class='xwing-miniatures-font xwing-miniatures-font-crit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-hit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-hit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-hit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-hit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-hit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-focus'></i>", '[&nbsp;&nbsp;]'];
+	var blackA = ["<i class='xwing-miniatures-font xwing-miniatures-font-crit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-hit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-hit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-hit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-focus'></i>", '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]'];
+	var whiteA = ["<i class='xwing-miniatures-font xwing-miniatures-font-crit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-hit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-hit'></i>", "<i class='xwing-miniatures-font xwing-miniatures-font-focus'></i>", '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]'];
 
-	var whiteD = ['Block', 'Surge', 'Blank', 'Blank', 'Blank', 'Blank'];
-	var redD = ['Block', 'Block', 'Block', 'Surge', 'Blank', 'Blank'];
+	var whiteD = ['&#9660', "<i class='xwing-miniatures-font xwing-miniatures-font-focus'></i>", '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]'];
+	var redD = ['&#9660', '&#9660', '&#9660', "<i class='xwing-miniatures-font xwing-miniatures-font-focus'></i>", '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]'];
 
 	$(document).ready(function() {
 		$('.dice').on('click', function() {
