@@ -71,7 +71,7 @@
 		        </div>	    	
 		    </div>
 		</div>
-		<div id="rollResult" style="text-align: left;">
+		<div id="rollResult" class="ui-grid-c center">
 		</div>
 		<div class="ui-grid-a">
 		    <div class="ui-block-a"><a href="#" class="ui-btn ui-shadow ui-corner-all" id="rollDice">Roll</a></div>
@@ -117,6 +117,8 @@
 
 	var whiteD = ['&#9660', "<i class='xwing-miniatures-font xwing-miniatures-font-focus'></i>", '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]'];
 	var redD = ['&#9660', '&#9660', '&#9660', "<i class='xwing-miniatures-font xwing-miniatures-font-focus'></i>", '[&nbsp;&nbsp;]', '[&nbsp;&nbsp;]'];
+
+	var diePool = [];
 
 	$(document).ready(function() {
 		$('.dice').on('click', function() {
@@ -194,6 +196,11 @@
 			$('#rollResult').html('');
 		});
 
+		$('#rollResult').on('click', '.reRollDie', function() {
+			// console.log($(this).attr('data-reRoll'));
+			reRoll($(this).attr('data-reRoll'));
+		});
+
 		$('#rollDice').on('click', function() {
 			$('#rollResult').html('');
 			var whiteAttack = parseInt($('#WA').val());
@@ -213,12 +220,16 @@
 			var attackDicePool = [];
 			var defenseDicePool = [];
 
+			var dicePool = [];
+
 			var whiteAx = 0;
 			var blackAx = 0;
 			var redAx = 0;
 
 			var whiteDx = 0;
 			var redDx = 0;
+
+			var n = 0;
 
 			while (whiteAx < whiteAttack) {
 				whiteAttackPool.push('whiteAttack_' + whiteAx);
@@ -246,37 +257,41 @@
 			}
 
 			for (x in whiteAttackPool) {
-				attackDicePool.push(whiteAttackPool[x]);
+				dicePool.push(whiteAttackPool[x]);
 			}
 
 			for (x in blackAttackPool) {
-				attackDicePool.push(blackAttackPool[x]);
+				dicePool.push(blackAttackPool[x]);
 			}
 
 			for (x in redAttackPool) {
-				attackDicePool.push(redAttackPool[x]);
+				dicePool.push(redAttackPool[x]);
 			}
 
 			for (x in whiteDefensePool) {
-				defenseDicePool.push(whiteDefensePool[x]);
+				dicePool.push(whiteDefensePool[x]);
 			}
 
 			for (x in redDefensePool) {
-				defenseDicePool.push(redDefensePool[x]);
+				dicePool.push(redDefensePool[x]);
 			}
 
-			roll(attackDicePool, 8);
-			roll(defenseDicePool, 6);
+			if (whiteAx > 0 || blackAx > 0 || redAx > 0) {
+				n = 8;
+			} else {
+				n = 6;
+			}
+
+			roll(dicePool, n);
 
 		});
 
 	});
 
 	function roll(d, n) {
-		var diePool = [];
+		diePool = [];
 		for (x in d) {
 			var tempDie = d[x].split('_');
-			// console.log(tempDie[0], tempDie[1]);
 			switch(tempDie[0]) {
 				case "whiteAttack":
 					diePool.push(new Dice('white', whiteA));
@@ -296,8 +311,14 @@
 			}
 		}
 		for (x in diePool) {
-			$('#rollResult').append('<p><b>' + diePool[x].color + ':</b>&nbsp;' + diePool[x].sides[returnRandom(n)] + '</p>');
+			$('#rollResult').append('<div class="ui-block-a"><p><b>' + diePool[x].color + ':</b></div><div class="ui-block-b" id="reRollSide_' + x + '"><p>' + diePool[x].sides[returnRandom(n)] + '</p></div><div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-refresh ui-btn-icon-notext ui-btn-inline reRollDie" data-reRoll="reRoll_' + x + '">Button</a></div>');
 		}
+	}
+
+	function reRoll(d) {
+		var data = d.split('_');
+		var newResult = (diePool[data[1]].sides[returnRandom(diePool[data[1]].sides.length)]);
+		$('#reRollSide_' + data[1]).html('<p>' + newResult + '</p>');
 	}
 
 	function returnRandom(max) {
