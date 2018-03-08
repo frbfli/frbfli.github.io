@@ -1,1066 +1,231 @@
-var _isSCORM = false; // TRUE for SCORM, FALSE for testing
-var _tempData = '9^9^1:0:f,2:0:f,3:0:f,4:0:f,5:0:f,6:0:f,7:0:f,8:0:f^false'; // Set to desired CBT progress
-var _passSCORE = 100; // Must match value in imsmanifest.xml
-
-/*------------------------------------------------------------------------------------------------
-   Shell Script
-------------------------------------------------------------------------------------------------*/
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// SCORM Vars
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-var _strSCORMStatus = null; // SCORM Status
-var _scormObj = {}; // SCORM Object
-var _scormPrev = null; // Not needed
-var _media = 'http://trsahq01v.corp.valero.com/topclass/media/HTML5/';
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Global Variables
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-var courseLength; // Used the set the number of slides
-var coursePosition = 0; // Set at 0 to prevent navigation bug
-var sectionPosition = 0;
-var slideNumber;
-var slideTotal;
-var Course; // Master course configuration
-var bulletList; // Array of bullets
-var fadeList; // Array of fades
-var splitList; // Array of split text
-var slideList = []; // Array of slides
-var sectionList = []; // Array of sections
-var t1; // Primary animation variable
-var t2; // Secondary animation variable
-var t4; // Split animation variable
-var captionSlide = TweenLite.from('#captions', 0.2, {"autoAlpha":0, "y":"+=120", paused: true, reversed: true}); // Sets captions to open/close
-var headerSlide = TweenLite.from('#header', 0.2, {opacity:100, "y":"+=120", paused: true, reversed: true}); // Animates header
-var nextSlide = TweenLite.from('#nextContainer', 0.5, {"autoAlpha":0, "y":"-=120", paused: true, reversed: true}); // Animates next slide prompt
-var menuSlider = TweenLite.from('#sectionMenu', 0.5, {"autoAlpha":0, paused: true, reversed: true}); // Animates section menu
-var a = document.getElementById('audioPlayer'); // HTML5 audio player
-var courseMaster = []; // Master course object
-var masterWindow = window.opener; // Reference to parent window
-var suspendData; // Data to send to SCORM
-var highestSlide; // Highest slide user has started
-var completedSlide = false; // User reached agreement form
-var sectionString = ''; // String format of completed sections
-var masterPause = false;
-var audioTrack = 0;
-var testScore = 100;
-var jumpBack = false;
-var holdAudio = false;
-var extraSteps = false;
-var hasConfirmation = false;
-var menuOut = false;
-var audioFinished = false;
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Objects
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-var OverviewSection = function(id, title, slides, icon, firstSlide, lastSlide, menuSection, complete, active) {
-  this.id = id;
-  this.title = title;
-  this.slides = slides;
-  this.icon = icon;
-  this.firstSlide = firstSlide;
-  this.lastSlide = lastSlide;
-  this.menuSection = menuSection;
-  this.complete = complete;
-  this.active = active;
-}
-
-var Slide = function(id, title, started, complete) {
-  this.id = id;
-  this.title = title;
-  this.started = started;
-  this.complete = complete;
-}
-
-var Bullet = function(id, params, start, duration) {
-  this.id = id;
-  this.params = params;
-  this.start = start;
-  this.duration = duration;
-}
-
-var suspendObject = function(highest, current, sectionList, complete) {
-  this.highest = highest;
-  this.current = current;
-  this.sectionList = sectionList;
-  this.complete = complete;
-}
-
-var suspendSection = function(id, slide, complete) {
-  this.id = id;
-  this.slide = slide;
-  this.complete = complete;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Event Listeners
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Fires each time a new frame is loaded
-function addEvents() {
-  $('#menuButton').click(animateMenu);
-
-  $('[data-popup-close-m]').click(function() {
-    $('[data-popup="menu"]').fadeOut(350);
-  });
-
-  document.getElementById('pauseButton').addEventListener('click', playAudio);
-  document.getElementById('backButton').addEventListener('click', backButton);
-  document.getElementById('restartButton').addEventListener('click', restartButton);
-  document.getElementById('forwardButton').addEventListener('click', advanceForward);
-  document.getElementById('captionButton').addEventListener('click', captionButton);
-
-  a.ontimeupdate = function() {
-    var per = (a.currentTime / a.duration) * 100;
-    $('#progress').css("width", per + '%'); // Redraw progress bar
-  }
-}
-
-function animateMenu() {
-  if (menuOut) {
-    t1.play();
-    t2.play();
-    t4.play();
-    if(!audioFinished) {
-      a.play();
-    }
-    $('#pauseButton').html('<img src="' + _media + 'assets/pause.png">');
-    menuSlider.reverse();
-    menuOut = false;
-  } else {
-    t1.pause();
-    t2.pause();
-    t4.pause();
-    a.pause();
-    $('#pauseButton').html('<img src="' + _media + 'assets/ply.png">');
-    menuSlider.play();
-    menuOut = true;
-  }
-  $('#backButton').toggleClass('disable');
-  if(!audioFinished) {
-    $('#pauseButton').toggleClass('disable');
-  } else {
-    $('#pauseButton').addClass('disable');
-    $('#pauseButton').html('<img src="' + _media + 'assets/ply.png">');
-  }
-  $('#restartButton').toggleClass('disable');
-  $('#captionButton').toggleClass('disable');
-  if(slideList[coursePosition].complete) { // Enable/disable 'next' button based on completion status
-    $('#forwardButton').toggleClass('disable');
-  }
-  if (!nextSlide.reversed()) { 
-    nextSlide.reverse();
-  }
-}
-
-function playAudio() {
-  t1.paused() ? t1.play() : t1.pause();
-  t2.paused() ? t2.play() : t2.pause();
-  t4.paused() ? t4.play() : t4.pause();
-  if (a.paused) {
-    if ($('#pauseButton').hasClass('disable')) {
-      a.pause();
-      masterPause = true;
-    } else {
-      a.play();
-      $('#pauseButton').html('<img src="' + _media + 'assets/pause.png">');
-      masterPause = false;
-    }
-  } else {
-    a.pause();
-    $('#pauseButton').html('<img src="' + _media + 'assets/ply.png">');
-    masterPause = true;
-  }
-}
-
-function backButton() {
-  if (!nextSlide.reversed()) { 
-      nextSlide.reverse();
-    }
-    coursePosition -= 1;
-    coursePosition < 0 ? coursePosition = 0 : coursePosition = coursePosition; // Checks that coursePosition is never negative
-    slideNumber -= 1;
-    slideNumber < 1 ? slideNumber = 1 : slideNumber = slideNumber; // Checks that slideNumber is never negative
-    advanceSlide();
-}
-
-function restartButton() {
-  if (!nextSlide.reversed()) { 
-      nextSlide.reverse();
-    }
-    $('#pauseButton').html('<img src="' + _media + 'assets/pause.png">'); // Set the button to the pause button
-    $('#pauseButton').removeClass('disable');
-    $('#pauseButton').prop("disabled", false);
-    $('[data-popup="menu"]').fadeOut(350);
-    loadFrame();
-}
-
-function captionButton() {
-  captionSlide.reversed() ? captionSlide.play() : captionSlide.reverse();
-  headerSlide.reversed() ? headerSlide.play() : headerSlide.reverse();
-}
-
-function removeEvents() { // Fires each time slide is unloaded
-  $('.button').unbind("click");
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// UI Functions
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function buildMenu() {
-  var menuString = '';
-  var menuID = 0;
-  var firstSlide = 0;
-  var lastSlide = 0;
-  var slideComplete = false;
-  var slideStarted = false;
-  var tempSlideCounter = 0;
-  var menuSection;
-  // Loop through config file and build the menu
-  for (x in menuLayout.sections) { // Loop through each section
-    // menuString += '<div class="menuHeader">' + menuLayout.sections[x].header + '</div><div class="menuSlide">';
-    var tempSlideList = [];
-    firstSlide = tempSlideCounter;
-    for (y in menuLayout.sections[x].slides) { // Loop through each slide in section[x]
-      tempSlideCounter += 1;
-      var cc = ''; // Sets class of menu link
-      var mc = ''; // Sets class of complete
-      parseInt(suspendData.highest) < menuID ? cc = 'inactive' : cc = '';
-      parseInt(suspendData.highest) < menuID ? mc = '' : mc = '&#10004';
-      menuString += '<span id="menuComplete_' + menuID + '" class="menuCompleteBox">' + mc + '</span><span id="menu_' + menuID + '" class="' + cc + '">' + menuLayout.sections[x].slides[y].title + '</span><br>'; // <span id="menu_01" class="inactive">Title</span>
-      slideList.push(new Slide(menuID, menuLayout.sections[x].slides[y].title, false, false));
-      tempSlideList.push(new Slide(menuID, menuLayout.sections[x].slides[y].title));
-      menuID += 1;
-    }
-    lastSlide = tempSlideCounter - 1;
-    menuSection = 'menuSection_' + x;
-    menuString += '</div>';
-    sectionList.push(new OverviewSection(x, menuLayout.sections[x].header, tempSlideList, menuLayout.sections[x].icon, firstSlide, lastSlide, menuSection, slideComplete, slideStarted));
-  }
-
-  // setActiveSlides(parseInt(suspendData.highest)); // Activate visited slides - UNCOMMENT LATER
-
-  $('#menuWindow').html(menuString); // Build menu with HTML string
-
-  // $('.menuSlide span').click(function() { // Set menu functionality
-  //   var tempId = this.id.split('_');
-  //   if(slideList[parseInt(tempId[1])].started) { // Has this slide already been started?
-  //     t1.kill(); // Kill animation
-  //     t2.kill();
-  //     t4.kill();
-  //     goToSlide(parseInt(tempId[1])); // Go to referenced slide
-  //     if (!nextSlide.reversed()) { 
-  //       nextSlide.reverse();
-  //     }
-  //   }
-  // });
-  sectionList[0].started = true;
-  markCompletedSlides();
-  buildSectionMenu(sectionList);
-  completeSlide(); // Sets first slide complete.
-  slideList[0].started = true;
-  sectionList[0].firstSlide = 1; // Removes disclaimer slide as first slide
-}
-
-function markCompletedSlides() {
-  var SCORMSectionList = suspendData.sectionList;
-  for (x in SCORMSectionList) {
-    for (y in sectionList) {
-      if (x == parseInt(sectionList[y].id)) {
-        if (SCORMSectionList[x].complete == "t") {
-          incCount = parseInt(y) + 1;
-          sectionList[y].complete = true;
-          sectionList[incCount].started = true;
-        }
-        for (j in sectionList[y].slides) {
-          if (j <= (parseInt(SCORMSectionList[x].slide) - 1)) {
-            sectionList[y].slides[j].complete = true;
-            sectionList[y].slides[j].started = true;
-            slideList[sectionList[y].slides[j].id].complete = true;
-            slideList[sectionList[y].slides[j].id].started = true;
-          } else {
-            sectionList[y].slides[j].complete = false;
-            sectionList[y].slides[j].started = false;
-            slideList[sectionList[y].slides[j].id].complete = false;
-            slideList[sectionList[y].slides[j].id].started = false;
-          }
-          var tempSlide = sectionList[y].slides[j];
-          // slideList.push(new Slide(tempSlide.id, tempSlide.title, tempSlide.started, tempSlide.complete));
-        }
-      }
-    }
-  }
-}
-
-function buildSectionMenu(sectionList) {
-  $('#sectionMenu').html('<div id="menuBackground"><img src="slides/images/backgroundImage.png" style="width:1130px;" /></div><img src="slides/images/menu/menuSymbol.png" style="position: absolute;top: 40px;left: 30px;" /><img src="slides/images/menu/menuMentor.png" style="position: absolute;right: 0;bottom: 4px;" /><img src="slides/images/menu/menuBox.png" style="position: absolute;left: 80px;top: 80px;" /><p class="menuTitle">IONIZING RADIATION SAFETY<br />COURSE MENU</p><div id="menuItems"></div>');
-  var tempClass = 'menuDisable';
-  var allComplete = 0;
-  for (x in sectionList) {
-    if (sectionList[x].started) {
-      tempClass = '';
-    } else {
-      tempClass = 'menuDisable';
-    }
-    if (sectionList[x].complete) {
-      completeClass = 'menuComplete';
-    } else {
-      completeClass = 'menuIncomplete';
-    }
-    var tempTitle = sectionList[x].title.toUpperCase();
-    if (sectionList[x].id == 1 || sectionList[x].id == 3) {
-      $('#menuItems').append('<div id="menuSection_' + sectionList[x].id + '" class="menuIcons largeBottom ' + tempClass + '"><img src="slides/images/menu/menuCheckBox01.png" /><img src="slides/images/menu/menuCheckBox02.png" class="' + completeClass + '"/><p>' + tempTitle + '</p></div>');
-    } else {
-      $('#menuItems').append('<div id="menuSection_' + sectionList[x].id + '" class="menuIcons ' + tempClass + '"><img src="slides/images/menu/menuCheckBox01.png" /><img src="slides/images/menu/menuCheckBox02.png" class="' + completeClass + '"/><p>' + tempTitle + '</p></div>');
-    }
-
-  }
-
-  // for (x in sectionList) {
-  //   if (x < sectionList.length - 1) {
-  //     if (sectionList[x].complete) {
-  //       allComplete += 1;
-  //     } else {
-  //       allComplete -= 1;
-  //     }
-  //   }
-  // }
-
-  // if (allComplete == sectionList.length - 1) {
-  //   $('#menuSection_7').html('<p>' + sectionList[x].title + '</p><img class="firstImage" src="slides/images/menu_' + sectionList[x].icon + 'OFF.png" /><img class="secondImage" src="slides/images/menu_' + sectionList[x].icon + 'ON.png" />');
-  // } else {
-  //   $('#menuSection_7').html('<p>' + sectionList[x].title + '</p><img class="firstImage" src="slides/images/menu_SummaryGray.png" /><img class="secondImage" src="slides/images/menu_SummaryGray.png" /><img src="slides/images/menuCheck.png" class="menuCheck ' + tempClass + '" />');
-  //   $('#menuSection_7').addClass('fade');
-  // }
-
-  $('.menuIcons').click(function() {
-    var tempJump = this.id.split('_');
-    animateMenu();
-    // console.log(tempJump[1]);
-    for (x in sectionList) {
-      if (x == parseInt(tempJump[1])) {
-        if ($(this).hasClass('menuDisable')) {
-          return false;
-        } else {
-          goToSlide(sectionList[x].firstSlide);
-          sectionPosition = x;
-        }
-      }
-    }
-  });
-
-}
-
-function populateCourse() {
-  for (x in menuLayout.sections) { // Loop through each section
-    for (y in menuLayout.sections[x].slides) { // lopp through each slide in section[x]
-      courseMaster.push(menuLayout.sections[x].slides[y].file); // Push file names to courseMaster
-    }
-  }
-
-  if (completedSlide) {
-    $('#forwardButton').removeClass('disable');
-    slideList[coursePosition].complete = true; // Slide is set to complete
-    nextSlide.play(); // Show Next Flag
-  }
-}
-
-function populateUI() {
-  slideNumber = getSlideNumber(coursePosition);
-  $('#page').html(slideNumber); // Display current slide number
-  $('#endPage').html(slideTotal); // Set end slide number
-  $('#progress').css("width", '1%'); // Start progress bar at 0%
-  $('#courseTitle').html(menuLayout.title); // Get slide title
-  $('#courseSection').html($('#menu_' + coursePosition).html()); // Set course section title, pulled from the menu object
-}
-
-// Create a list of bullets
-function buildBullet() {
-  bulletList = [];
-  fadeList = [];
-  splitList = [];
-
-  $('[data-animation').each(function() {
-    var tempParam = jQuery.parseJSON(anim($(this).attr('anim-type'), $(this).attr('anim-dist')));
-    var tempDur;
-    if ($(this).attr('anim-duration')) {
-      tempDur = $(this).attr('anim-duration');
-    } else {
-      tempDur = 0.5;
-    }
-    var tempBullet = new Bullet($(this).attr('id'), tempParam, $(this).attr('data-animation'), tempDur);
-    bulletList.push(tempBullet);    
-  });
-
-  $('[fade-out').each(function() {
-    if (typeof $(this).attr('fade-out') !== 'undefined' && $(this).attr('fade-out')) {
-      var tempDur;
-      if ($(this).attr('fade-duration')) {
-        tempDur = $(this).attr('fade-duration');
-      } else {
-        tempDur = 0.5;
-      }
-      var tempFade = jQuery.parseJSON(anim($(this).attr('fade-type'), $(this).attr('fade-dist')));
-      var fadeBullet = new Bullet($(this).attr('id'), tempFade, $(this).attr('fade-out'), true);
-      fadeList.push(fadeBullet);
-    }
-  });
-
-  $('[data-split').each(function() {
-    var tempType = $(this).attr('data-split');
-    var tempParam = jQuery.parseJSON(anim($(this).attr('split-type'), $(this).attr('split-dist')));
-    var tempSplit = new SplitText('#' + $(this).attr('id'), {type:"lines,words,chars", position:"relative"});
-    var tempSplitObj  = [];
-    tempSplitObj.type = tempType;
-    tempSplitObj.duration = $(this).attr('split-duration');
-    tempSplitObj.inc = $(this).attr('split-inc');
-    tempSplitObj.time = $(this).attr('split-time');
-    tempSplitObj.item = tempSplit;
-    if (tempParam.x) {
-      tempParam.x = parseInt(tempParam.x.split('=').pop());
-    }
-    if (tempParam.y) {
-      tempParam.y = parseInt(tempParam.y.split('=').pop());
-    }
-    tempSplitObj.params = tempParam;
-    splitList.push(tempSplitObj);
-  });
-}
-
-function buildStage() { // Set references to iframe to be used by GreenSock animation
-  t1 = new TimelineLite({paused: true});
-  t2 = new TimelineLite({paused: true});
-  t4 = new TimelineLite({paused: true});
-
-  for (x in bulletList) { // Loop through each bullet
-    var elem = window.document.getElementById(bulletList[x].id); // Variable used to prevent Greensock Animation bug
-    t1.from(elem, bulletList[x].duration, bulletList[x].params, bulletList[x].start); // Sets Greensock Animation parameters  
-  }
-
-  for (x in fadeList) {
-    var elem = window.document.getElementById(fadeList[x].id);
-    t2.to(elem, 0.5, fadeList[x].params, fadeList[x].start);
-  }
-
-  for (x in splitList) {
-    var type;
-    switch(splitList[x].type) {
-      case 'chars':
-        type = splitList[x].item.chars;
-        break;
-      case 'words':
-        type = splitList[x].item.words;
-        break;
-      case 'lines':
-        type = splitList[x].item.lines;
-        break;
-    }
-    t4.staggerFrom(type, splitList[x].duration, splitList[x].params, splitList[x].inc, splitList[x].time);
-  }
-  
-
-  $('#main').show();
-  t1.play(); // Start the animation
-  t2.play(); // Start the secondary animation
-  t4.play(); // Start the split animation
-
-  a.src = 'slides/audio/' + $('#main').attr('data-audio'); // Set the audio source
-  a.play(); // Play the audio file
-  $('#pauseButton').html('<img src="' + _media + 'assets/pause.png">'); // Set the button to the pause button
-  $('#pauseButton').removeClass('disable');
-  $('#pauseButton').prop("disabled", false);
-  $('.loader').removeClass('show');
-}
-
-function setAudio(e) {
-    audioTrack = 0;
-    audioFinished = false;
-    if (e) {
-      if (holdAudio) {
-        a.removeEventListener('ended', audioEnded);
-        holdAudio = false;
-      } else {
-        a.addEventListener('ended', audioEnded);
-      }
-    } else {
-      for (x in au) {
-        audioTrack += 1;
-      }
-      createAudio(au);
-    }    
-}
-
-function audioEnded() { // Fires on audio end
-  slideList[coursePosition].complete = true; // Slide is set to complete
-  masterPause = true;
-  audioFinished = true;
-  completeSlide();
-  $('#forwardButton').removeClass('disable'); // Next button becomes active
-  $('#pauseButton').html('<img src="' + _media + 'assets/ply.png">'); // Set the button to the pause button
-  $('#pauseButton').addClass('disable');
-  $('#pauseButton').prop("disabled", true);
-  nextSlide.play(); // Show Next Flag
-}
-
-function checkAudioFinished(n) {
-  if (n >= audioTrack) {
-    slideList[coursePosition].complete = true; // Slide is set to complete
-    $('#forwardButton').removeClass('disable'); // Next button becomes active
-    nextSlide.play(); // Show Next Flag
-    $('#instructionText').addClass('hidden');
-  }
-}
-
-function checkFinished() {
-  return slideList[coursePosition].quizFinished;
-}
-
-function finishedQuiz(v) {
-  setSectionComplete();
-  updateSlideList(slideList[coursePosition].id);
-  slideList[coursePosition].complete = true;
-  slideList[coursePosition].quizFinished = true;
-  _scormObj["suspend_data"] = (highestSlide.toString() - 1) + '^' + (coursePosition.toString() - 1) + '^' + sectionString + '^' + completedSlide.toString();
-  saveSCORMData(); // Save user progress with SCORM
-  masterPause = true;
-  animateMenu();
-  // $('#forwardButton').removeClass('disable'); // Next button becomes active
-  // if (jumpBack) {
-  //   jumpBack = false;
-  //   goToSlide(23); // Set to overview slide
-  // } else {
-  //   advanceForward();
-  // }
-}
-
-function setScore(score) {
-  testScore = score;
-  $('#courseContentBody').load("feedback.html", function() {
-    $('#backButton').addClass('disable');
-    $('#forwardButton').addClass('disable');
-    $('#pauseButton').addClass('disable');
-    $('#restartButton').addClass('disable');
-    $('#menuButton').addClass('disable');
-    $('#captionButton').addClass('disable');
-
-    if (!captionSlide.reversed()) {
-      captionSlide.reverse();
-    }
-
-    if (headerSlide.reversed()) {
-      headerSlide.play();
-    }
-
-    removeEvents();
-    $('#main').show();
-    $('#score').html(score);
-
-    if (score < _passSCORE) {
-      $('#finishSubmit').val('RETAKE');
-      $('#testFeedback').html('In order to pass you must score  ' + _passSCORE + '% or higher. Click "RETAKE" to try again.');
-      $('#testFeedback').css('visibility', 'visible');
-    } else {
-      $('#testFeedback').html('You passed the exam! Click "FINISH" in order to receive credit.');
-      $('#testFeedback').css('visibility', 'visible');
-    }
-
-    $('#finishSubmit').click(function(){
-      if (score >= _passSCORE) {
-        setCourseSCORMComplete();
-      } else {
-        advanceSlide();
-      }      
-    });
-  });
-}
-
-function setActiveSlides(n) { // Activate visited slides
-  var i = 0;
-  if (n > 0) {
-    for (x in menuLayout.sections) {
-      for (y in menuLayout.sections[x].slides) {
-        if (n > i) {
-          slideList[i].complete = true; // Set to true if slide has been completed
-        }
-        if (n >= i) {
-          slideList[i].started = true; // Set to true if slide has been started
-        }
-        i++;
-      }
-    }
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Navigation Functions
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function advanceForward(forwardFlag) { // Check to advance slide forward
-  if (slideList[coursePosition].complete) { // Has the slide been completed?
-    if (forwardFlag != true){             
-      if (!nextSlide.reversed()) { 
-      nextSlide.reverse();
-       }
-    }
-    updateSlideList(slideList[coursePosition].id);
-    coursePosition += 1;
-    coursePosition > parseInt(highestSlide) ? highestSlide = coursePosition : highestSlide = parseInt(highestSlide); // Update highest slide if new slide is higher than what's stored
-    coursePosition <= (courseMaster.length - 1) ? advanceSlide() : setCourseSCORMComplete(); // Check if final slide has been reached. If not, advance to the next slide, otherwise begin course shutdown
-    slideNumber += 1;
-  }
-}
-
-function updateSlideList(i) {
-  for (x in sectionList) {
-    for (y in sectionList[x].slides) {
-      if (i == sectionList[x].slides[y].id) {
-        sectionList[x].slides[y].complete = true;
-        sectionList[x].slides[y].started = true;
-      }
-    }
-  }
-  updateSectionString();
-}
-
-function updateSectionString() {
-  var tempString = '';
-  for (x in sectionList) {
-    var tempCounter = parseInt(sectionList[x].id) + 1;
-    tempString = tempString + tempCounter + ':';
-    var slideCounter = 0;
-    for (y in sectionList[x].slides) {
-      if (sectionList[x].slides[y].complete) {
-        slideCounter++;
-      }
-    }
-    tempString = tempString + slideCounter + ':';
-    if (sectionList[x].complete) {
-      tempString = tempString + 't';
-    } else {
-      tempString = tempString + 'f'
-    }
-    if (x < (sectionList.length - 1)) {
-      tempString = tempString + ',';
-    }
-  }
-
-  sectionString = tempString;
-  _scormObj["suspend_data"] = (highestSlide.toString() - 1) + '^' + (coursePosition.toString() - 1) + '^' + sectionString + '^' + completedSlide.toString();
-  saveSCORMData(); // Save user progress with SCORM
-}
-
-// Navigate to desired slide
-function goToSlide(x) {
-  a.pause();
-  // updateSlideList(x);
-  // _scormObj["suspend_data"] = (highestSlide.toString() - 1) + '^' + (coursePosition.toString() - 1) + '^' + sectionString + '^' + completedSlide.toString();
-  coursePosition = x;  
-  slideNumber = getSlideNumber(x);
-  if(slideList[coursePosition].complete) { // Enable/disable 'next' button based on completion status
-    $('#forwardButton').removeClass('disable');
-  } else {
-    $('#forwardButton').addClass('disable');
-  }
-  $('[data-popup="menu"]').fadeOut(350);
-  loadFrame(); // Load new iframe
-}
-
-function getSlideNumber(n) {
-  for (x in sectionList) {
-    for (y in sectionList[x].slides) {
-      if (n == sectionList[x].slides[y].id) {
-        slideTotal = sectionList[x].slides.length;
-        return (parseInt(y) + parseInt(1));
-      }
-    }
-  }
-}
-
-function advanceSlide() {
-  t1.kill(); // Destroy animation
-  t2.kill();
-  t4.kill();
-  completeSlide(); // Set slide complete
-  slideList[coursePosition].started = true; // Set started true
-  if(!slideList[coursePosition].complete) { // Has the slide been completed?
-    $('#forwardButton').addClass('disable');
-  } else {
-    $('#forwardButton').removeClass('disable');
-  }
-  $('[data-popup="menu"]').fadeOut(350);
-  masterPause = false;
-  $('#captionInner').animate({scrollTop: 0}, 'fast');
-  loadFrame();
-}
-
-function setJump(v) {
-  if (v) {
-    jumpBack = true;
-  }
-}
- 
-// Load iframe
-function loadFrame() {
-  $('.loader').addClass('show');
-  removeEvents(); // Unload listeners=
-  a.removeEventListener('ended',autoForward); 
-  // updateSlideList(slideList[coursePosition].id);
-  updateSectionString();
-  _scormObj["suspend_data"] = highestSlide.toString() + '^' + coursePosition.toString() + '^' + sectionString + '^' + completedSlide.toString(); // Set suspend_data to include highest slide, current slide, and agreement reached
-  saveSCORMData(); // Save user progress with SCORM
-
-  $.get('slides/' + courseMaster[coursePosition] + 'c.html')
-    .done(function() {
-      $('#captionInner').load('slides/' + courseMaster[coursePosition] + 'c.html');
-    }).fail(function() {
-      $('#captionInner').html('');
-    });
-  $('#courseContentBody').load("slides/" + courseMaster[coursePosition] + ".html", function() {
-    frameLoad();
-  });
-}
-
-function completeSlide() { // Set slide complete on menu
-  $('#menu_' + coursePosition).removeClass('inactive');
-  $('#menuComplete_' + coursePosition).html('&#10004');
-}
-
-function extraEvents() { // Used when audio finishes
-  holdAudio = true;
-  extraSteps = true;
-}
-
-function extraStepSetup() { // Used with audio
-  extraSteps = true;
-}
-
-function autoForward() {
-  // Fires on audio end
-  slideList[coursePosition].complete = true; // Slide is set to complete
-  masterPause = true;
-  completeSlide();
-  advanceForward(true);    
-}
-
-function setSectionComplete() {
-  for (x in sectionList) {
-    if (sectionList[x].lastSlide == coursePosition) {
-      // console.log('Section ' + sectionList[x].menuSection + ' complete');
-      sectionList[x].complete = true;
-      updateSlideList(slideList[coursePosition].id);
-    }
-  }
-  buildSectionMenu(sectionList);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Initialize Functions
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-var frameLoad = function() { // Fires once iframe is finished loading
-  delete window.questions;
-  $('#forwardButton').removeClass('hide');
-  $.getScript("slides/" + courseMaster[coursePosition] + ".js")
-    .done(function() {
-      var script = document.createElement("script");
-      script.type = "text/javascript";
-      document.getElementsByTagName("head")[0].appendChild(script);
-      if (typeof questions !== 'undefined' && questions) {
-        initQuiz(questions);
-      }
-      if (typeof au !== 'undefined' && au) {
-        setAudio(false);
-      } else {
-        setAudio(true);
-      }
-    }).fail(function() {
-      setAudio(true);
-    });
-  addEvents();
-  populateUI();
-  buildBullet();
-  buildStage();
-  if (extraSteps) {
-    beginExtra();
-    extraSteps = false;
-  }
-}
-
-// First function to load
-function init() {
-  checkSCORM(_isSCORM);  // Check if SCORM is enabled
-  buildMenu(); // Build the menu
-  populateCourse(); // Build course  
-  confirmationSlide(); // Check for confirmation slide 
-  $('#captionInner').load('slides/' + courseMaster[coursePosition] + 'c.html');
-  $('#courseContentBody').load("slides/" + courseMaster[coursePosition] + ".html", function() { // Load iframe
-    frameLoad();
-  });
-}
-
-function noSCORM() {
-  var tempSuspend = _tempData.split('^');
-  splitData(tempSuspend);
-}
-
-function checkSCORM(x) {
-  if (x) {
-    startSCORMConnection(); // Start the SCORM connection
-    loadSCORMData(); // Load in data from SCORM
-  } else {
-    noSCORM();
-  }
-}
-
-function confirmationSlide() {
-  if (menuLayout.confirm) {
-    hasConfirmation = true;
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// SCORM Functions
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Initialize the SCORM connection
-function startSCORMConnection() {
-  // get SCORM data
-  if (!_strSCORMStatus) {
-    if (InitSCORMConnection()) {
-      _strSCORMStatus = "INITIALIZED";
-    } else {
-      _strSCORMStatus = "FAILED";
-    }
-  }
-}
-
-// Determine if the SCORM connection is initialized
-function isSCORMInitialized() {
-  return _strSCORMStatus == "INITIALIZED";
-}
-
-// Load the necessary SCORM elements from the LMS
-function loadSCORMData() {
-  console.log('starting connection'); // Used to ensure browser tries to load SCORM data
-  if (!_strSCORMStatus) {
-    startSCORMConnection();
-  }
-
-  // Get the data from LMS
-  if(isSCORMInitialized()) {
-    _scormObj["student_id"] = GetSCORMValue("cmi.core.student_id");
-    _scormObj["student_name"] = GetSCORMValue("cmi.core.student_name");
-    _scormObj["lesson_location"] = GetSCORMValue("cmi.core.lesson_location");
-    _scormObj["lesson_status"] = GetSCORMValue("cmi.core.lesson_status");
-    _scormObj["score"] = GetSCORMValue("cmi.core.score.raw");
-    _scormObj["time"] = GetSCORMValue("cmi.core.total_time");
-    _scormObj["suspend_data"] = GetSCORMValue("cmi.suspend_data");
-    _scormObj["launch_data"] = GetSCORMValue("cmi.launch_data");
-  }
-
-  // Log initial data to track changes
-  _scormPrev = cloneObject(_scormObj); // Not needed
-  _scormObj["lesson_status"] = "incomplete";
-
-  // Split suspend_data
-  var tempSuspend = _scormObj["suspend_data"].split('^');
-  splitData(tempSuspend);
-}
-
-function splitData(tempSuspend) {
-  var tempSuspendSection = [];
-  var tempSection;
-  var tempSplitSection = [];
-  if (tempSuspend[2]) {
-    tempSection = tempSuspend[2].split(',');
-  } else {
-    tempSection = ['0:0:f'];
-  }
-
-  for (x in tempSection) {
-    var tempSectionSplit = tempSection[x].split(':');
-    tempSuspendSection.push(new suspendSection(tempSectionSplit[0], tempSectionSplit[1], tempSectionSplit[2]));
-  }
-
-  suspendData = new suspendObject(tempSuspend[0], tempSuspend[1], tempSuspendSection, tempSuspend[3]);
-
-  if (suspendData.highest <= 0) { // Is the highest value lower than 0? (or NaN?)
-    highestSlide = 0; // Set to 0
-    suspendData.highest = 0; // Set to 0
-  } else {
-    highestSlide = suspendData.highest;
-  }
-  if (!suspendData.current) { // Does suspendData.current exist?
-    suspendData.current = 0; // Set to 0
-  }
-
-  suspendData.complete == 'true' ? completedSlide = true : completedSlide = false;
-
-  coursePosition = parseInt(suspendData.current); // Value is stored as a string, convert to int
-}
-
-// Get the current bookmark
-function getBookmark() {
-  return _scormObj["lesson_location"];
-}
-
-// Get the course status
-function getCourseStatus() {
-  return _scormObj["lesson_status"];
-}
-
-// Determine if the course has been marked complete
-function isCourseComplete() {
-  return _scormObj["lesson_status"] == "completed" || _scormObj["lesson_status"] == "passed";
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Save Functions
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-function saveSCORMData(bIncludesSessionTime) {
-  // Get debug data
-  getSCORMData();
-
-  var arrChanges = [];
-
-  // Push new data
-  arrChanges.push({"element":"cmi.core.lesson_location", "value":_scormObj["lesson_location"]});
-  arrChanges.push({"element":"cmi.core.lesson_status", "value":_scormObj["lesson_status"]});
-  arrChanges.push({"element":"cmi.core.score.raw", "value":_scormObj["score"]});
-  arrChanges.push({"element":"cmi.suspend_data", "value":_scormObj["suspend_data"]});
-  if ((bIncludesSessionTime) && (_scormObj["session_time"])) {
-    arrChanges.push({"element":"cmi.core.session_time", "value":_scormObj["session_time"]});
-  }
-
-  // Reset change log
-  _scormPrev = cloneObject(_scormObj); // Not needed
-
-  for (i in arrChanges) { // Loop through each update
-    SetSCORMValue(arrChanges[i].element, arrChanges[i].value); // Set SCORM value
-  }
-
-  //Commit changes
-  CommitSCORMData();
-}
-
-// Record a bookmark
-function setBookmark(strBookmark, bSave) {
-  _scormObj["lesson_location"] = strBookmark;
-  //Commit changes
-  if ((bSave) && isSCORMInitialized()) {
-    saveSCORMData();
-  }
-}
-
-// Mark the course complete
-function setCourseSCORMComplete() {
-  if (hasConfirmation) {
-    runConfirmationSlide();
-  } else {
-    _scormObj["lesson_status"] = "completed"; // Set course complete
-    setCourseScore(testScore, false); // Set score
-    saveSCORMData(); // Save data
-    exitCourse(); // Begin shutdown
-    window.close();
-  }
-}
-
-// Takes user to confirmation page
-function runConfirmationSlide() {
-  $('#courseContentBody').load("slides/confirmation.html", function() {
-    completedSlide = true;
-    updateSectionString();
-    $('#graySpace').hide();
-    // updateSlideList(slideList[coursePosition].id);
-    _scormObj["suspend_data"] = (highestSlide.toString() - 1) + '^' + (coursePosition.toString() - 1) + '^' + sectionString + '^' + completedSlide.toString();
-    saveSCORMData(); // Save user progress with SCORM
-    frameLoad();
-  });
-}
-
-function setCourseSCORMInComplete() { // End course without saving
-  exitCourse(); // Begin shutdown
-}
-
-// Save the score
-function setCourseScore(nScore, bSave) {
-  _scormObj["score"] = nScore; // Set score object
-
-  //Commit changes
-  if ((bSave) && (isSCORMInitialized())) {
-    saveSCORMData();
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Exit Functions
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Terminate the SCORM connection and exit the course
-function exitCourse() {
-  if (isSCORMInitialized()) { // Send data to the LMS
-    saveSCORMData(true); // Save outstanding data (including session time)
-    terminateSCORMConnection_shell();// Tell the LMS to exit
-  }
-}
-
-// Terminate the connection with the LMS
-function terminateSCORMConnection_shell() {
-  if (isSCORMInitialized()) {
-    _strSCORMStatus = "TERMINATED";
-    TerminateSCORMConnection();
-  }
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Misc. Functions
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-// Get the data to save - Not used
-function getSCORMData() {
-  /*Add function */
-}
-
-// Make a copy of an object that contains simple values - Used but not needed
-function cloneObject(sourceObj) {
-  var copyObj = sourceObj;
-  return copyObj;
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom Access to Medical
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-// var sectionCompletion = [];
-
-// function checkCompletion(n) {
-//   for (x in sectionCompletion) {
-//     if (n == sectionCompletion[x].section) {
-//       return true;
-//     }
-//   }
-//   addCompletedSection(n);
-// }
-
-// function addCompletedSection(v) {
-//   sectionCompletion.push(new completedSection(v, true));
-// }
-
-// function checkCompletedSections() {
-//   return sectionCompletion;
-// }
-
-// var completedSection = function(section, complete) {
-//   this.section = section;
-//   this.complete = complete;
-// }
-
-// Fire init() after document is ready
-$(document).ready(init());
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Legion Dice</title>
+
+	<meta content="yes" name="apple-mobile-web-app-capable">
+	<meta content="yes" name="mobile-web-app-capable">
+	<meta content="black" name="apple-mobile-web-app-status-bar-style">
+	<meta content="user-scalable=no, width=device-width, initial-scale=1" name="viewport">
+
+	
+	
+  	<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+  	<link rel="stylesheet" href="css/themes/redTheme.css" />
+  	<link rel="stylesheet" href="css/themes/jquery.mobile.icons.min.css" />
+
+	<style>
+		.center {
+		    text-align: center;
+		}
+/*		.redButton {
+			background-color: #AD3131;
+			color: white;
+			text-shadow: unset;
+			font-weight: unset;
+		}*/
+	</style>
+
+	<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+	<script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+</head>
+<body>
+
+<div data-role="page">
+
+	<div data-role="header">
+		<h1>Legion Dice</h1>
+	</div><!-- /header -->
+
+	<div role="main" class="ui-content center">
+		<div class="ui-grid-b center">
+			<div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:30px">White</div></div>
+		    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:30px">Black</div></div>
+		    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:30px">Red</div></div>
+		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteAUp">Button</a></div>
+		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="blackAUp">Button</a></div>
+		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-plus ui-btn-icon-notext ui-btn-inline dice" data-type="redAUp">Button</a></div>
+		    <div class="ui-block-a"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="WA" value="0" type="number" class="attackValue"></div></div>
+		    <div class="ui-block-b"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="BA" value="0" type="number" class="attackValue"></div></div>
+		    <div class="ui-block-c"><div class="ui-bar ui-bar-a" style="height:60px"><input name="number" pattern="[0-9]*" id="RA" value="0" type="number" class="attackValue"></div></div>
+		    <div class="ui-block-a"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="whiteADown">Button</a></div>
+		    <div class="ui-block-b"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="blackADown">Button</a></div>
+		    <div class="ui-block-c"><a class="ui-shadow ui-btn ui-corner-all ui-icon-minus ui-btn-icon-notext ui-btn-inline dice" data-type="redADown">Button</a></div>
+		</div>
+		<div class="ui-grid-solo">
+		    <div class="ui-block-a"><a href="#" class="ui-btn ui-shadow ui-corner-all" id="rollAttack">Roll</a></div>
+		</div>
+		<div class="ui-grid-solo">
+		    <div class="ui-block-a"><a href="#" class="ui-btn ui-btn-b ui-shadow ui-corner-all" id="resetButton">Reset</a></div>
+		</div>
+		<div id="rollResult">
+		</div>
+	</div><!-- /content -->
+
+	<div data-role="footer">
+		<h4>Created by Fli</h4>
+	</div><!-- /footer -->
+</div><!-- /page -->
+
+
+<script>
+	var AttackDice = function(s1, s2, s3, s4, s5, s6, s7, s8) {
+		this.s1 = s1;
+		this.s2 = s2;
+		this.s3 = s3;
+		this.s4 = s4;
+		this.s5 = s5;
+		this.s6 = s6;
+		this.s7 = s7;
+		this.s8 = s8;
+	}
+
+	var DefenseDice = function(s1, s2, s3, s4, s5, s6) {
+		this.s1 = s1;
+		this.s2 = s2;
+		this.s3 = s3;
+		this.s4 = s4;
+		this.s5 = s5;
+		this.s6 = s6;
+	}
+
+	var Dice = function(color, sides) {
+		this.color = color;
+		this.sides = sides;
+	}
+
+	var redA = ['crit', 'hit', 'hit', 'hit', 'hit', 'hit', 'surge', 'blank'];
+	var blackA = ['crit', 'hit', 'hit', 'hit', 'surge', 'blank', 'blank', 'blank'];
+	var whiteA = ['crit', 'hit', 'hit', 'surge', 'blank', 'blank', 'blank', 'blank'];
+
+	var whiteD = ['block', 'surge', 'blank', 'blank', 'blank', 'blank'];
+	var redD = ['block', 'block', 'block', 'surge', 'blank', 'blank'];
+
+	$(document).ready(function() {
+		$('.dice').on('click', function() {
+			var tempDieVal = 0;
+			var diceAction = $(this).attr('data-type');
+
+			switch(diceAction) {
+				case 'whiteAUp':
+					tempDieVal = parseInt($('#WA').val()) + 1;
+					$('#WA').val(tempDieVal);
+					break;
+				case 'whiteADown':
+					tempDieVal = parseInt($('#WA').val()) - 1;
+					if (tempDieVal < 0) {
+						tempDieVal = 0;
+					}
+					$('#WA').val(tempDieVal);
+					break;
+				case 'blackAUp':
+					tempDieVal = parseInt($('#BA').val()) + 1;
+					$('#BA').val(tempDieVal);
+					break;
+				case 'blackADown':
+					tempDieVal = parseInt($('#BA').val()) - 1;
+					if (tempDieVal < 0) {
+						tempDieVal = 0;
+					}
+					$('#BA').val(tempDieVal);
+					break;
+				case 'redAUp':
+					tempDieVal = parseInt($('#RA').val()) + 1;
+					$('#RA').val(tempDieVal);
+					break;
+				case 'redADown':
+					tempDieVal = parseInt($('#RA').val()) - 1;
+					if (tempDieVal < 0) {
+						tempDieVal = 0;
+					}
+					$('#RA').val(tempDieVal);
+					break;
+			}
+		});
+
+		$('#resetButton').on('click', function() {
+			$('.attackValue').val(0);
+			$('#rollResult').html('');
+		});
+
+		$('#rollAttack').on('click', function() {
+			$('#rollResult').html('');
+			var whiteAttack = parseInt($('#WA').val());
+			var blackAttack = parseInt($('#BA').val());
+			var redAttack = parseInt($('#RA').val());
+
+			var whiteAttackPool = [];
+			var blackAttackPool = [];
+			var redAttackPool = [];
+
+			var attackDicePool = [];
+
+			var whiteAx = 0;
+			var blackAx = 0;
+			var redAx = 0;
+
+			while (whiteAx < whiteAttack) {
+				whiteAttackPool.push('whiteAttack_' + whiteAx);
+				whiteAx++;
+			}
+
+			while (blackAx < blackAttack) {
+				blackAttackPool.push('blackAttack_' + blackAx);
+				blackAx++;
+			}
+
+			while (redAx < redAttack) {
+				redAttackPool.push('redAttack_' + redAx);
+				redAx++;
+			}
+
+			for (x in whiteAttackPool) {
+				attackDicePool.push(whiteAttackPool[x]);
+			}
+
+			for (x in blackAttackPool) {
+				attackDicePool.push(blackAttackPool[x]);
+			}
+
+			for (x in redAttackPool) {
+				attackDicePool.push(redAttackPool[x]);
+			}
+
+			roll(attackDicePool);
+
+		});
+
+	});
+
+	function roll(d) {
+		var diePool = [];
+		for (x in d) {
+			var tempDie = d[x].split('_');
+			// console.log(tempDie[0], tempDie[1]);
+			switch(tempDie[0]) {
+				case "whiteAttack":
+					diePool.push(new Dice('white', whiteA));
+					break;
+				case "blackAttack":
+					diePool.push(new Dice('black', blackA));
+					break;
+				case "redAttack":
+					diePool.push(new Dice('red', redA));
+					break;
+			}
+		}
+		// console.log(diePool);
+		for (x in diePool) {
+			// console.log(diePool[x].color, diePool[x].sides[returnRandom(8)]);
+			$('#rollResult').append('<p><b>' + diePool[x].color + '</b>&nbsp;' + diePool[x].sides[returnRandom(8)] + '</p>');
+		}
+	}
+
+	function returnRandom(max) {
+		return Math.floor(Math.random() * Math.floor(max));
+	}
+
+</script>
+
+</body>
+</html>
