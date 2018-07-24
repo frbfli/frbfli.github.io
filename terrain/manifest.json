@@ -1,5 +1,6 @@
 {
  "name": "Guild Ball Terrain Generator",
+ "display": "standalone",
  "icons": [
   {
    "src": "\/images/icon-36.png",
