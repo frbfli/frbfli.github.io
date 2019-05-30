@@ -55,6 +55,9 @@ body,
     text-decoration: none;
     transform: translate(-50%);
 }
+.button span {
+    pointer-events: none;
+}
 #hideView {
     position: fixed;
     top: 0;
