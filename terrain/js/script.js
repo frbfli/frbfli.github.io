@@ -51,7 +51,9 @@ function randomGen(min, max) {
 }
 
 function setTerrain() {
-    var n = randomGen(4, 6);
+    //var n = randomGen(4, 6);
+	
+    var n = randomGen(6, 6);
 
     var ob = Math.ceil(n / 2);
 
@@ -64,7 +66,7 @@ function setTerrain() {
             terrainType[i] = "obstruction";
         } else {
             terrainType[i] = types[randomGen(0, types.length - 1)];
-            while (barrier > 0 && terrainType[i] == "barrier" || forest > 0 && terrainType[i] == "forest" || fast > 1 && terrainType[i] == "fast") {
+            while (barrier > 0 && terrainType[i] == "barrier" || forest > 0 && terrainType[i] == "forest" || fast > 0 && terrainType[i] == "fast") {
                 terrainType[i] = types[randomGen(0, types.length - 1)];
             }
             if (terrainType[i] == "barrier") {
