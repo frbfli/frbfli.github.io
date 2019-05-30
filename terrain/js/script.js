@@ -51,22 +51,21 @@ function randomGen(min, max) {
 }
 
 function setTerrain() {
-    //var n = randomGen(4, 6);
-	
-    var n = randomGen(6, 6);
+    var n = randomGen(4, 6);
 
     var ob = Math.ceil(n / 2);
 
     var barrier = 0;
     var forest = 0;
     var fast = 0;
+    var rough = 0;
 
     for (var i = 0; i < n; i++) {
         if (i < ob) {
             terrainType[i] = "obstruction";
         } else {
             terrainType[i] = types[randomGen(0, types.length - 1)];
-            while (barrier > 0 && terrainType[i] == "barrier" || forest > 0 && terrainType[i] == "forest" || fast > 0 && terrainType[i] == "fast") {
+            while (barrier > 0 && terrainType[i] == "barrier" || forest > 0 && terrainType[i] == "forest" || fast > 3 && terrainType[i] == "fast" || rough > 0 && terrainType[i] == "rough") {
                 terrainType[i] = types[randomGen(0, types.length - 1)];
             }
             if (terrainType[i] == "barrier") {
@@ -75,6 +74,8 @@ function setTerrain() {
                 forest++;
             } else if (terrainType[i] == "fast") {
                 fast++;
+            } else if (terrainType[i] == "rough") {
+                rough++;
             }
         }
         genCoords(terrainType[i]);
@@ -180,7 +181,8 @@ function paintTerrain() {
 function checkCollision(c) {
     var t = terrainArray;
     var checkHere;
-    var size2 = c.size * sizeMultiplier;
+    // var size2 = c.size * sizeMultiplier;
+    var size2 = 0;
     var rect2 = {
         x: c.x - terrainDistance,
         y: c.y - terrainDistance,
