@@ -65,7 +65,7 @@ function setTerrain() {
             terrainType[i] = "obstruction";
         } else {
             terrainType[i] = types[randomGen(0, types.length - 1)];
-            while (barrier > 0 && terrainType[i] == "barrier" || forest > 0 && terrainType[i] == "forest" || fast > 3 && terrainType[i] == "fast" || rough > 0 && terrainType[i] == "rough") {
+            while (barrier > 0 && terrainType[i] == "barrier" || forest > 0 && terrainType[i] == "forest" || fast > 3 && terrainType[i] == "fast") {
                 terrainType[i] = types[randomGen(0, types.length - 1)];
             }
             if (terrainType[i] == "barrier") {
@@ -74,8 +74,6 @@ function setTerrain() {
                 forest++;
             } else if (terrainType[i] == "fast") {
                 fast++;
-            } else if (terrainType[i] == "rough") {
-                rough++;
             }
         }
         genCoords(terrainType[i]);
