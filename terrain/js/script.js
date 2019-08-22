@@ -179,8 +179,8 @@ function paintTerrain() {
 function checkCollision(c) {
     var t = terrainArray;
     var checkHere;
-    // var size2 = c.size * sizeMultiplier;
-    var size2 = 0;
+    var size2 = c.size * sizeMultiplier;
+    // var size2 = 0; // Fix terrain being placed too close
     var rect2 = {
         x: c.x - terrainDistance,
         y: c.y - terrainDistance,
