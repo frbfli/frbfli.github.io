@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html> 
+	<head>
+		<meta content="IE=Edge" http-equiv="X-UA-Compatible">
+        <meta http-equiv="expires" content="Sun, 01 Jan 2014 00:00:00 GMT">
+        <meta http-equiv="pragma" content="no-cache">
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Halo: GC List Builder</title>
+		<link rel="stylesheet" href="css/main.css" />
+		<script src="utils/jquery.js"></script>
+		<script src="config/unsc.js"></script>
+		<script src="config/covenant.js"></script>
+	</head>
+	<body onload="init()">
+		<div class="content-wrapper">
+			<div class="list-container multi-grid">
+				<div class="list-menu-bar">
+					<div class="faction-button">
+						<p>UNSC</p>
+					</div>
+					<div class="list-icon-holder">
+						<div class="list-icon" data-type="I"><p>I</p></div>
+						<div class="list-icon" data-type="A"><p>A</p></div>
+						<div class="list-icon" data-type="F"><p>F</p></div>
+						<div id="commanderButton" class="list-icon" data-type="C"><p>C</p></div>
+					</div>
+					<div class="list-point-value">
+						<p><span id="currentPoints">0</span> / <span id="maxPoints">1250</span></p>
+						<div class="build-rating-holder">
+							<p>Infantry BR: <span id="totalBuildRatingInf">0</span></p>
+							<p>Armor BR: <span id="totalBuildRatingArm">0</span></p>
+							<p>Flyer BR: <span id="totalBuildRatingFly">0</span></p>
+						</div>						
+					</div>
+				</div>
+				<div id="builtList" class="built-list">
+
+				</div>
+			</div>
+			<div class="item-container multi-grid">
+				<div class="unit-card-close">x</div>
+				<div id="unitCardContainer">
+					
+				</div>
+			</div>
+		</div>		
+		<script src="scripts/main.js"></script>		
+	</body>
+</html>

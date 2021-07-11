@@ -1,0 +1,75 @@
+.item-container {
+	position: relative;
+	margin-top: 60px;
+	margin-left: 30px;
+	opacity: 0;
+
+    &.active {
+        opacity: 1;
+    }
+
+    & .unit-card-close {
+        position: absolute;
+        top: -30px;
+        right: 0;
+        cursor: pointer;
+    }
+
+    & #unitCardContainer {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        grid-template-rows: auto;
+        gap: 10px 10px;
+
+        & .unit-card {
+            position: relative;
+            background-color: rgb(99, 99, 99);
+            width: 100%;
+            height: 100%;
+            min-height: 200px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+
+            & .unit-control-bar {
+                position: absolute;
+                bottom: 10px;
+                left: 0px;
+                background-color: rgba(0,0,0,0.1);
+                width: 100%;
+                height: auto;
+                padding: 10px 0;
+                display: flex;
+                justify-content: flex-end;
+                align-items: center;
+                transform: translateY(100px);
+                transition: transform .3s;
+
+                & .control-bar-text {
+                    display: flex;
+                    font-size: 12px;
+                    align-items: flex-end;
+                    justify-content: center;
+                    flex-flow: column wrap;
+                }
+
+                & .add-unit-button {
+                    @include flex-item;
+                    background-color: rgb(77, 179, 0);
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 5px;
+                    padding: 10px;
+                    margin: 0 20px;
+                }
+            }
+
+            &:hover .unit-control-bar {
+                transform: translateY(0);
+            }
+        }
+    }
+}

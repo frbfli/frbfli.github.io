@@ -1,0 +1,17 @@
+.content-wrapper {
+	position: relative;
+	margin: 0 auto;
+	display: flex;
+	align-items: flex-start;
+	justify-content: center;
+	width: 100%;
+	background-color: rgb(48, 48, 48);
+	padding: 10px;
+	color: white;
+}
+
+.multi-grid {
+	flex-grow: 0;
+	max-width: 50%;
+	flex-basis: 50%;
+}

@@ -1,0 +1,100 @@
+.list-container {
+
+    & .list-menu-bar {
+        @include flex-item;
+        justify-content: space-around;
+
+        & .faction-button {
+            @include flex-item;
+            min-width: 120px;
+            cursor: pointer;
+        }
+
+        & .list-icon-holder {
+            @include flex-item;
+            justify-content: space-around;
+
+            & .list-icon {
+                @include flex-item;
+                padding: 5px;
+                margin: 5px;
+                width: 25px;
+                height: 25px;
+                border-radius: 5px;
+                color: white;
+                background-color: rgb(66, 66, 66);
+                cursor: pointer;                
+            }
+
+            & #commanderButton {
+                &.active {
+                    background-color: rgb(112,138,72);
+                }                
+            }
+        }
+
+        & .list-point-value {
+            & .build-rating-holder {
+                @include flex-item;
+                & p {
+                    font-size: 12px;
+                    margin: 0 10px;
+                    opacity: 0.5;
+
+                    &:first-child {
+                        margin-left: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    & .built-list {
+        @include flex-item;
+        flex-flow: column nowrap;
+
+        & .added-unit {
+            @include flex-item;
+            flex-flow: column nowrap;
+            align-items: flex-start;
+            padding: 5px;
+            position: relative;
+            width: 100%;
+
+            & .top-row {
+                @include flex-item;
+                margin: 5px 0;
+
+                & p {
+                    font-weight: bold;
+                }
+            }
+
+            & .bottom-row {
+                @include flex-item;
+                & p {
+                    margin: 0 5px;
+                    font-size: 12px;
+                }
+            }
+
+            & .add-unit-small {
+                position: absolute;
+                right: 10px;
+                bottom: 10px;
+                cursor: pointer;
+                text-transform: uppercase;
+                font-size: 14px;
+            }
+
+            & .remove-unit-button {
+                position: absolute;
+                right: 30px;
+                bottom: 10px;
+                cursor: pointer;
+                text-transform: uppercase;
+                font-size: 14px;
+            }
+        }
+    }
+}
