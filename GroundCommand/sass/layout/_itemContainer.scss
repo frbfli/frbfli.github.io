@@ -1,11 +1,12 @@
 .item-container {
 	position: relative;
 	margin-top: 60px;
-	margin-left: 30px;
 	opacity: 0;
+    pointer-events: none;
 
     &.active {
         opacity: 1;
+        pointer-events: initial;
     }
 
     & .unit-card-close {
@@ -71,5 +72,29 @@
                 transform: translateY(0);
             }
         }
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .item-container {
+        background-color: #303030;
+        position: absolute;
+        max-width: 100%;
+        margin-top: 0;
+        left: 0;
+
+        & .unit-card-close {
+            top: 10px;
+            right: 30px;
+        }
+
+        & #unitCardContainer {
+            background-color: #303030;
+            width: 100vw;
+            padding: 20px;
+            grid-template-columns: 1fr;
+            margin-top: 30px;
+        }
+
     }
 }
