@@ -233,7 +233,7 @@ body {
   font-size: 14px;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-device-width: 600px) {
   .list-container {
     max-width: 100%;
     -ms-flex-preferred-size: 100%;
@@ -355,7 +355,7 @@ body {
           transform: translateY(0);
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-device-width: 600px) {
   .item-container {
     background-color: #303030;
     position: absolute;
