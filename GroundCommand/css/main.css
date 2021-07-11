@@ -424,4 +424,88 @@ body {
 .unit-card.pelican-image {
   background-image: url("../images/cardImages/unsc/pelican.png");
 }
+
+.unit-card.aaWraith-image {
+  background-image: url("../images/cardImages/covenant/aaWraith.png");
+}
+
+.unit-card.artilleryWraith-image {
+  background-image: url("../images/cardImages/covenant/artilleryWraith.png");
+}
+
+.unit-card.banshee-image {
+  background-image: url("../images/cardImages/covenant/banshee.png");
+}
+
+.unit-card.eliteAssault-image {
+  background-image: url("../images/cardImages/covenant/eliteAssault.png");
+}
+
+.unit-card.eliteGeneral-image {
+  background-image: url("../images/cardImages/covenant/eliteGeneral.png");
+}
+
+.unit-card.eliteMinor-image {
+  background-image: url("../images/cardImages/covenant/eliteMinor.png");
+}
+
+.unit-card.eliteOfficer-image {
+  background-image: url("../images/cardImages/covenant/eliteOfficer.png");
+}
+
+.unit-card.eliteUltra-image {
+  background-image: url("../images/cardImages/covenant/eliteUltra.png");
+}
+
+.unit-card.eliteUltraOfficer-image {
+  background-image: url("../images/cardImages/covenant/eliteUltraOfficer.png");
+}
+
+.unit-card.eliteZealot-image {
+  background-image: url("../images/cardImages/covenant/eliteZealot.png");
+}
+
+.unit-card.gruntLevies-image {
+  background-image: url("../images/cardImages/covenant/gruntLevies.png");
+}
+
+.unit-card.hunters-image {
+  background-image: url("../images/cardImages/covenant/hunters.png");
+}
+
+.unit-card.jackalAssault-image {
+  background-image: url("../images/cardImages/covenant/jackalAssault.png");
+}
+
+.unit-card.jackalMarksmen-image {
+  background-image: url("../images/cardImages/covenant/jackalMarksmen.png");
+}
+
+.unit-card.locust-image {
+  background-image: url("../images/cardImages/covenant/locust.png");
+}
+
+.unit-card.phantom-image {
+  background-image: url("../images/cardImages/covenant/phantom.png");
+}
+
+.unit-card.revenant-image {
+  background-image: url("../images/cardImages/covenant/revenant.png");
+}
+
+.unit-card.scoutGhost-image {
+  background-image: url("../images/cardImages/covenant/scoutGhost.png");
+}
+
+.unit-card.seraph-image {
+  background-image: url("../images/cardImages/covenant/seraph.png");
+}
+
+.unit-card.stormGhost-image {
+  background-image: url("../images/cardImages/covenant/stormGhost.png");
+}
+
+.unit-card.vampire-image {
+  background-image: url("../images/cardImages/covenant/vampire.png");
+}
 /*# sourceMappingURL=main.css.map */
