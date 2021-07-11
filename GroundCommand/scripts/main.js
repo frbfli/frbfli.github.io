@@ -14,12 +14,13 @@ var _Current_Army_Options = [];
 
 var _ArmyComp = [];
 
-var Unit = function(id, name, cost, buildRating, unitType) {
+var Unit = function(id, name, cost, buildRating, unitType, image) {
 	this.id = id;
 	this.name = name;
 	this.cost = cost;
 	this.buildRating = buildRating;
 	this.unitType = unitType;
+	this.image = image;
 }
 
 var UnitGroup = function(id, total) {
@@ -29,11 +30,11 @@ var UnitGroup = function(id, total) {
 
 function init() {
 	for (x in UNSC_Units) {
-		_UNSC_Unit_Options.push(new Unit(x, UNSC_Units[x].name, UNSC_Units[x].cost, UNSC_Units[x].buildRating, UNSC_Units[x].type));
+		_UNSC_Unit_Options.push(new Unit(x, UNSC_Units[x].name, UNSC_Units[x].cost, UNSC_Units[x].buildRating, UNSC_Units[x].type, UNSC_Units[x].icon));
 	}		
 
 	for (x in Covenant_Units) {
-		_Cov_Unit_Options.push(new Unit(x, Covenant_Units[x].name, Covenant_Units[x].cost, Covenant_Units[x].buildRating, Covenant_Units[x].type));
+		_Cov_Unit_Options.push(new Unit(x, Covenant_Units[x].name, Covenant_Units[x].cost, Covenant_Units[x].buildRating, Covenant_Units[x].type, Covenant_Units[x].icon));
 	}
 	
 	addListeners();				
@@ -104,16 +105,15 @@ function displayUnits(n) {
 	for (x in _Current_Army_Options) {
 		if (_Current_Army_Options[x].unitType == n) {
 			jQuery('<div/>', {
-				'class': 'unit-card',
+				'class': 'unit-card ' + _Current_Army_Options[x].image + '-image',
 				'data-id': x,
-				'data-type': _Current_Army_Options[x].id,
-				'html':'<div class="unit-card-name"><p>' + _Current_Army_Options[x].name + '</p></div>'
+				'data-type': _Current_Army_Options[x].id
 			}).appendTo('#unitCardContainer');
 			
 			jQuery('<div/>', {
 				'class': 'unit-control-bar',
 				'data-id': x,
-				'html': '<div class="control-bar-text"><p>Cost: ' + _Current_Army_Options[x].cost + '</p><p>Build Rating: ' + _Current_Army_Options[x].buildRating + '</p></div>'
+				'html': '<div class="control-bar-text"><div class="unit-card-name"><p>' + _Current_Army_Options[x].name + '</p></div><p>Cost: ' + _Current_Army_Options[x].cost + '</p><p>Build Rating: ' + _Current_Army_Options[x].buildRating + '</p></div>'
 			}).appendTo('.unit-card[data-id="' + x + '"]');
 			
 			jQuery('<div/>', {

@@ -1,0 +1,60 @@
+.unit-card {
+    background-size: cover;
+    &.riflemen-image {
+        background-image: url('../images/cardImages/unsc/riflemen.png');
+    }
+    &.reconTeam-image {
+        background-image: url('../images/cardImages/unsc/reconTeam.png')
+    }
+    &.fireSupport-image {
+        background-image: url('../images/cardImages/unsc/fireSupport.png')
+    }
+    &.flameMarines-image {
+        background-image: url('../images/cardImages/unsc/flameMarines.png')
+    }
+    &.officer-image {
+        background-image: url('../images/cardImages/unsc/officer.png')
+    }
+    &.odstHelljumper-image {
+        background-image: url('../images/cardImages/unsc/odstHelljumper.png')
+    }
+    &.odstAirAssault-image {
+        background-image: url('../images/cardImages/unsc/odstAirAssault.png')
+    }
+    &.spartan3-image {
+        background-image: url('../images/cardImages/unsc/spartan3.png')
+    }
+    &.warthog-image {
+        background-image: url('../images/cardImages/unsc/warthog.png')
+    }
+    &.gaussHog-image {
+        background-image: url('../images/cardImages/unsc/gaussHog.png')
+    }
+    &.rocketHog-image {
+        background-image: url('../images/cardImages/unsc/rocketHog.png')
+    }
+    &.mongoose-image {
+        background-image: url('../images/cardImages/unsc/mongoose.png')
+    }
+    &.scorpion-image {
+        background-image: url('../images/cardImages/unsc/scorpion.png')
+    }
+    &.sunDevil-image {
+        background-image: url('../images/cardImages/unsc/sunDevil.png')
+    }
+    &.cyclops-image {
+        background-image: url('../images/cardImages/unsc/cyclops.png')
+    }
+    &.falcon-image {
+        background-image: url('../images/cardImages/unsc/falcon.png')
+    }
+    &.hornet-image {
+        background-image: url('../images/cardImages/unsc/hornet.png')
+    }
+    &.longsword-image {
+        background-image: url('../images/cardImages/unsc/longsword.png')
+    }
+    &.pelican-image {
+        background-image: url('../images/cardImages/unsc/pelican.png')
+    }
+}      

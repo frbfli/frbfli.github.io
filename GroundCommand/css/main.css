@@ -284,7 +284,7 @@ body {
   position: absolute;
   bottom: 10px;
   left: 0px;
-  background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.6);
   width: 100%;
   height: auto;
   padding: 10px 0;
@@ -343,5 +343,85 @@ body {
 .item-container #unitCardContainer .unit-card:hover .unit-control-bar {
   -webkit-transform: translateY(0);
           transform: translateY(0);
+}
+
+.unit-card {
+  background-size: cover;
+}
+
+.unit-card.riflemen-image {
+  background-image: url("../images/cardImages/unsc/riflemen.png");
+}
+
+.unit-card.reconTeam-image {
+  background-image: url("../images/cardImages/unsc/reconTeam.png");
+}
+
+.unit-card.fireSupport-image {
+  background-image: url("../images/cardImages/unsc/fireSupport.png");
+}
+
+.unit-card.flameMarines-image {
+  background-image: url("../images/cardImages/unsc/flameMarines.png");
+}
+
+.unit-card.officer-image {
+  background-image: url("../images/cardImages/unsc/officer.png");
+}
+
+.unit-card.odstHelljumper-image {
+  background-image: url("../images/cardImages/unsc/odstHelljumper.png");
+}
+
+.unit-card.odstAirAssault-image {
+  background-image: url("../images/cardImages/unsc/odstAirAssault.png");
+}
+
+.unit-card.spartan3-image {
+  background-image: url("../images/cardImages/unsc/spartan3.png");
+}
+
+.unit-card.warthog-image {
+  background-image: url("../images/cardImages/unsc/warthog.png");
+}
+
+.unit-card.gaussHog-image {
+  background-image: url("../images/cardImages/unsc/gaussHog.png");
+}
+
+.unit-card.rocketHog-image {
+  background-image: url("../images/cardImages/unsc/rocketHog.png");
+}
+
+.unit-card.mongoose-image {
+  background-image: url("../images/cardImages/unsc/mongoose.png");
+}
+
+.unit-card.scorpion-image {
+  background-image: url("../images/cardImages/unsc/scorpion.png");
+}
+
+.unit-card.sunDevil-image {
+  background-image: url("../images/cardImages/unsc/sunDevil.png");
+}
+
+.unit-card.cyclops-image {
+  background-image: url("../images/cardImages/unsc/cyclops.png");
+}
+
+.unit-card.falcon-image {
+  background-image: url("../images/cardImages/unsc/falcon.png");
+}
+
+.unit-card.hornet-image {
+  background-image: url("../images/cardImages/unsc/hornet.png");
+}
+
+.unit-card.longsword-image {
+  background-image: url("../images/cardImages/unsc/longsword.png");
+}
+
+.unit-card.pelican-image {
+  background-image: url("../images/cardImages/unsc/pelican.png");
 }
 /*# sourceMappingURL=main.css.map */
